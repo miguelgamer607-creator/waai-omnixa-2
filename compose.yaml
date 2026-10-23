@@ -1,0 +1,22 @@
+services:
+  waai:
+    build: .
+    container_name: waai-omnixa
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      APP_ENV: ${APP_ENV:-production}
+      DB_PATH: /data/waai.db
+    ports:
+      # Bound to localhost; put an HTTPS reverse proxy in front for remote access.
+      - "127.0.0.1:8000:8000"
+    volumes:
+      - waai-data:/data
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/health', timeout=3)"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+volumes:
+  waai-data:

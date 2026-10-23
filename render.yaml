@@ -1,0 +1,32 @@
+# Deploy only after reviewing the plan and disk price in Render.
+# SQLite is persistent only because this blueprint declares a disk; Render disks require a paid service.
+services:
+  - type: web
+    name: waai-omnixa
+    runtime: docker
+    plan: starter
+    region: ohio
+    dockerContext: .
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /api/health
+    disk:
+      name: waai-data
+      mountPath: /data
+      sizeGB: 1
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: DB_PATH
+        value: /data/waai.db
+      - key: WAAI_TIMEZONE
+        value: America/Bogota
+      - key: WAAI_DAILY_REPORT_HOUR
+        value: "5"
+      - key: WAAI_AUTOMATION_INTERVAL_SECONDS
+        value: "60"
+      - key: WAAI_RESEARCH_ENABLED
+        value: "true"
+      - key: WAAI_RESEARCH_TIMEOUT_SECONDS
+        value: "10"
+      - key: WAAI_ACCESS_TOKEN
+        sync: false
