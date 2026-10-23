@@ -1,41 +1,53 @@
 # Waai · Omnixa
 
-**Foundation v0.2.0 · Python · FastAPI · PWA · SQLite**
+**Foundation v0.2.0** · Aplicación web instalable (PWA) · Python/FastAPI · SQLite · Español
 
-Waai is an experimental, Spanish-first personal assistant project. This repository is intended to be the single source of truth for the mobile-friendly app, Python API, behaviour rules, persistent memory and future research/model adapters.
+Waai empieza como secretaria digital con conversación básica, tareas, recordatorios, informes, memoria autorizada e investigaciones asignadas explícitamente. Este repositorio es la única base de desarrollo del proyecto.
 
-## Principles
+## Funciones actuales
 
-- **Safety first:** the three laws are design principles, not a formal guarantee. Keep safety and permissions outside any future language model.
-- **User instructions:** act only through explicitly implemented and authorized tools.
-- **User control:** users can inspect and remove stored memories; no self-deployment or self-modifying code.
-- **Explicit learning:** personal memory is saved only on request. Research notes become permanent knowledge only after human approval.
-- **Privacy:** do not upload credentials, personal databases, or .env files.
+- Interfaz móvil instalable en navegadores compatibles.
+- API Python con persistencia SQLite para tareas, conversación, recuerdos, encargos de investigación, conocimiento aprobado y notificaciones.
+- Reglas conversacionales en español; no depende de una API de modelo lingüístico.
+- Memoria personal guardada solo tras una autorización expresa.
+- Investigaciones iniciadas por encargo. Los extractos se conservan como fuentes revisables; el conocimiento permanente necesita aprobación humana.
+- Recordatorios de tareas vencidas e informes diarios/semanales mientras el servidor está activo.
+- Protección básica con token en modo producción; nunca se incluyen credenciales en el código.
 
-## Foundation scope
+## Límites importantes
 
-- Installable progressive web app for supported browsers.
-- FastAPI backend and SQLite persistence.
-- Spanish conversational rules and task management.
-- Persistent chat history and explicitly saved memories.
-- Research assignments, plus an approval step before promoting findings to knowledge.
-- Daily/weekly reports and reminder scheduling while the server is running.
-- Research search is invoked only for an explicit task; browsing/provider reliability must be verified after deployment.
-- No neural model is connected yet. Rule-based dialogue and saved knowledge are not the same as training an AI model.
-- No guaranteed push notifications while the app is closed.
+- **No hay un modelo neuronal conectado ni autoentrenamiento.** El motor de reglas y la memoria son funciones reales, pero no equivalen a entrenar una IA.
+- La búsqueda web puede depender de la disponibilidad del proveedor y debe probarse después del despliegue.
+- La comprobación de seguridad es limitada; las tres leyes son principios de diseño, no una garantía formal.
+- Las notificaciones quedan guardadas en la base de datos. Las notificaciones push fiables con la app cerrada requieren una integración adicional.
+- Es una base para uso individual, no un sistema multiusuario endurecido.
 
-## Run and deploy
+## Ejecutar en local
 
-See `docs/DEPLOYMENT.md` and `docs/GITHUB_SETUP.md` for installation, local run, environment settings, persistent storage, and deployment.
+Requiere Python 3.11 o posterior (se recomienda 3.12).
 
-## Security
+```bash
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+APP_ENV=development WAAI_RESEARCH_ENABLED=false uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
+```
 
-Keep the repository private while checking that every image is appropriately licensed. Never commit `.env`, access tokens, databases or personal backups. For public deployment, use HTTPS, strong authentication, persistent storage and backups. Research content from websites must be treated as untrusted data, never as instructions.
+En Windows PowerShell activa con `.venv\Scripts\Activate.ps1` y configura las variables con `$env:NOMBRE="valor"`. Abre http://127.0.0.1:8000.
 
-## Roadmap
+## Despliegue
 
-1. Get the whole codebase into this repository and verify CI.
-2. Deploy to a persistent server.
-3. Verify research sources, citations, and approval flow.
-4. Add private/local model inference through an interchangeable adapter.
-5. Evaluate the model separately while deterministic permissions and policy checks remain outside it.
+- [Guía de despliegue](DEPLOYMENT.md)
+- [Guía de GitHub](GITHUB_SETUP.md)
+- [Hoja de ruta](ROADMAP.md)
+- [Política de seguridad](SECURITY.md)
+
+Antes del despliegue, configura `WAAI_ACCESS_TOKEN` con un valor aleatorio de al menos 32 caracteres y usa almacenamiento persistente para `/data`. No publiques archivos `.env`, bases de datos ni exportaciones privadas. Usa HTTPS y copias de seguridad protegidas.
+
+## Siguientes hitos
+
+1. Validar un despliegue persistente y las funciones de investigación.
+2. Reforzar autenticación, recuperación y copias de seguridad.
+3. Integrar un modelo lingüístico local intercambiable, sin API corporativa por defecto.
+4. Mantener permisos, memoria y reglas de seguridad fuera del modelo.
+5. Desarrollar una integración Android después de estabilizar la PWA y la API.
