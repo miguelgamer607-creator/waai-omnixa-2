@@ -205,10 +205,13 @@ async def chat(payload:ChatInput):
         with db_session() as db:
             history_rows = db.execute("SELECT role,content FROM messages ORDER BY id DESC LIMIT 18").fetchall()
             knowledge_rows = db.execute("SELECT topic,summary,source_url FROM knowledge ORDER BY approved_at DESC LIMIT 8").fetchall()
+            task_rows = db.execute("SELECT title,priority,due_at FROM tasks WHERE status='pending' ORDER BY CASE priority WHEN 'high' THEN 0 WHEN 'normal' THEN 1 ELSE 2 END, COALESCE(due_at,'9999') LIMIT 8").fetchall()
         history = [dict(row) for row in reversed(history_rows)]
         approved_knowledge = [dict(row) for row in knowledge_rows]
+        task_lines = [f"- {row['title']} (prioridad {row['priority']}" + (f", fecha {row['due_at']}" if row["due_at"] else "") + ")" for row in task_rows]
+        context_note = "Tareas pendientes actuales verificadas por la aplicación:\\n" + ("\\n".join(task_lines) if task_lines else "No hay tareas pendientes guardadas.") + "\\nPropón prioridades de forma realista; no declares una tarea completada ni cambies datos."
         try:
-            reply["reply"] = await generate_reply(messages=history, approved_knowledge=approved_knowledge)
+            reply["reply"] = await generate_reply(messages=history, approved_knowledge=approved_knowledge, context_note=context_note)
             reply["llm_used"] = True
             reply["model"] = model_name()
         except Exception:
