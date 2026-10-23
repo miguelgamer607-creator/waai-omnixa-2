@@ -8,7 +8,9 @@ Waai empieza como secretaria digital con conversación básica, tareas, recordat
 
 - Interfaz móvil instalable en navegadores compatibles.
 - API Python con persistencia SQLite para tareas, conversación, recuerdos, encargos de investigación, conocimiento aprobado y notificaciones.
-- Reglas conversacionales en español; no depende de una API de modelo lingüístico.
+- Reglas conversacionales en español, con proveedor opcional compatible con OpenAI para conversación generativa y síntesis preliminar de investigaciones.
+- Interfaz móvil con retrato de personaje configurable desde el teléfono; la imagen se queda en ese navegador.
+- Modo opt-in de iniciativa: una investigación diaria de temas preautorizados, con borradores y fuentes revisables, sin guardado permanente automático.
 - Memoria personal guardada solo tras una autorización expresa.
 - Investigaciones iniciadas por encargo. Los extractos se conservan como fuentes revisables; el conocimiento permanente necesita aprobación humana.
 - Recordatorios de tareas vencidas e informes diarios/semanales mientras el servidor está activo.
@@ -16,7 +18,7 @@ Waai empieza como secretaria digital con conversación básica, tareas, recordat
 
 ## Límites importantes
 
-- **No hay un modelo neuronal conectado ni autoentrenamiento.** El motor de reglas y la memoria son funciones reales, pero no equivalen a entrenar una IA.
+- **No se incluye un modelo neuronal ni autoentrenamiento.** Para habilitar conversación generativa debes configurar un endpoint compatible; sin ello, Waai responde mediante reglas.
 - La búsqueda web puede depender de la disponibilidad del proveedor y debe probarse después del despliegue.
 - La comprobación de seguridad es limitada; las tres leyes son principios de diseño, no una garantía formal.
 - Las notificaciones quedan guardadas en la base de datos. Las notificaciones push fiables con la app cerrada requieren una integración adicional.
@@ -34,6 +36,10 @@ APP_ENV=development WAAI_RESEARCH_ENABLED=false uvicorn app.main:app --reload --
 ```
 
 En Windows PowerShell activa con `.venv\Scripts\Activate.ps1` y configura las variables con `$env:NOMBRE="valor"`. Abre http://127.0.0.1:8000.
+
+## Modelo lingüístico e iniciativa
+
+Consulta [AUTONOMY.md](AUTONOMY.md) para conectar un modelo local o remoto compatible y activar investigaciones diarias por temas autorizados. Ambos sistemas están apagados o sin configurar por defecto; la memoria permanente siempre requiere aprobación.
 
 ## Despliegue
 
