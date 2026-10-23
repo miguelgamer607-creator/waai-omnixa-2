@@ -105,7 +105,7 @@ async def health():
 
 @app.get("/api/config")
 async def config():
-    return {"auth_required":os.getenv("APP_ENV","development").lower()=="production","assistant_mode":"llm+rules+automation" if model_is_configured() else "rules+automation","automation_enabled":True,"timezone":os.getenv("WAAI_TIMEZONE","America/Bogota"),"research_provider_connected":os.getenv("WAAI_RESEARCH_ENABLED","true").lower() in {"1","true","yes","on"},"llm_connected":model_is_configured(),"llm_model":model_name() if model_is_configured() else None}
+    return {"auth_required":os.getenv("APP_ENV","development").lower()=="production","assistant_mode":"llm+rules+automation" if model_is_configured() else "rules+automation","automation_enabled":True,"timezone":os.getenv("WAAI_TIMEZONE","America/Bogota"),"research_provider_connected":os.getenv("WAAI_RESEARCH_ENABLED","true").lower() in {"1","true","yes","on"},"llm_connected":model_is_configured(),"llm_model":model_name() if model_is_configured() else None,"autonomy_mode":os.getenv("WAAI_AUTONOMY_MODE","off").strip().lower(),"autonomous_research_interests":len([x for x in os.getenv("WAAI_RESEARCH_INTERESTS","").split(";") if x.strip()]),"autonomous_research_hour":int(os.getenv("WAAI_AUTONOMY_RESEARCH_HOUR","6"))}
 
 @app.get("/api/overview")
 async def overview():
