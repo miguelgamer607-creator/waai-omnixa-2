@@ -198,6 +198,12 @@ public final class OverlayService extends Service {
                 openHome();
             }
         });
+        dismissButton = compactButton("Descartar novedad", false);
+        LinearLayout.LayoutParams dismissParams = buttonParams();
+        dismissParams.topMargin = dp(4);
+        eventPanel.addView(dismissButton, dismissParams);
+        dismissButton.setVisibility(View.GONE);
+        dismissButton.setOnClickListener(v -> dismissCurrentEvent());
 
         LinearLayout manage = new LinearLayout(this);
         manage.setOrientation(LinearLayout.HORIZONTAL);
@@ -353,6 +359,7 @@ public final class OverlayService extends Service {
             actionButton.setVisibility(canOpen ? View.VISIBLE : View.GONE);
             if (canOpen) actionButton.setText("Abrir fuente o contenido");
         }
+        if (dismissButton != null) dismissButton.setVisibility(View.VISIBLE);
         if (pet != null) pet.setMood("research");
         if (eventPanel != null && eventPanel.getVisibility() != View.VISIBLE) togglePanel();
         showEventNotification(currentEventTitle, currentEventMessage);
@@ -396,6 +403,7 @@ public final class OverlayService extends Service {
         if (eventTitle != null) eventTitle.setText("Estoy aquí");
         if (eventMessage != null) eventMessage.setText("Tócame para charlar, revisar una tarea o preguntarme por una investigación.");
         if (actionButton != null) actionButton.setVisibility(View.GONE);
+        if (dismissButton != null) dismissButton.setVisibility(View.GONE);
         if (pet != null) pet.setMood("idle");
         hidePanel();
     }
