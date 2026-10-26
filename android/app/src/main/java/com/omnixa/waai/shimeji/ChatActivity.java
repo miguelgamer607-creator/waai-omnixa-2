@@ -44,6 +44,29 @@ public final class ChatActivity extends Activity {
         loadHistory();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setShimejiHidden(true);
+    }
+
+    @Override
+    protected void onPause() {
+        setShimejiHidden(false);
+        super.onPause();
+    }
+
+    private void setShimejiHidden(boolean hidden) {
+        if (!WaaiPrefs.store(this).getBoolean(WaaiPrefs.SERVICE_ACTIVE, false)) return;
+        Intent intent = new Intent(this, OverlayService.class);
+        intent.setAction(hidden ? OverlayService.ACTION_HIDE_FOR_CHAT : OverlayService.ACTION_SHOW_AFTER_CHAT);
+        try {
+            startService(intent);
+        } catch (Exception e) {
+            android.util.Log.i("WaaiChat", "Overlay visibility unchanged: " + e.getMessage());
+        }
+    }
+
     private View buildUi() {
         LinearLayout root = new LinearLayout(this);
         root.setOrientation(LinearLayout.VERTICAL);
