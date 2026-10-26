@@ -1,12 +1,15 @@
 # Waai · Omnixa
 
-**Waai Companion v0.4.1** · Aplicación web instalable (PWA) · Python/FastAPI · SQLite · Español
+**Waai Companion v0.5.0** · Aplicación web instalable (PWA) · Python/FastAPI · SQLite · Español
 
 Waai empieza como secretaria digital con conversación básica, tareas, recordatorios, informes, memoria autorizada e investigaciones asignadas explícitamente. Este repositorio es la única base de desarrollo del proyecto.
 
 ## Funciones actuales
 
-- Interfaz móvil instalable (PWA) con mascota original SVG animada, estados visuales y burbuja flotante arrastrable dentro de la aplicación.
+- Interfaz móvil instalable (PWA) que sirve como hogar para tareas, memoria, investigaciones y configuración.
+- App Android nativa en `android/` con ventana Shimeji encima de otras aplicaciones, personaje dibujado en Canvas, panel flotante y chat nativo.
+- Iniciativa móvil opt-in, con silencio nocturno, cooldown del servidor, avisos de investigación y botones explícitos para abrir enlaces.
+- Acciones de búsqueda permitidas para imágenes, vídeos, música y web; abrir contenido requiere un toque del usuario.
 - CSS y JavaScript locales, sin CDN ni librerías de interfaz remotas; los resultados de investigación se dibujan con APIs del DOM, no como HTML ejecutable.
 - Caché offline limitada a la carcasa estática; las rutas `/api/` nunca se guardan en la caché del navegador.
 - API Python con persistencia SQLite para tareas, conversación, recuerdos, encargos de investigación, conocimiento aprobado y notificaciones.
@@ -52,7 +55,8 @@ Revisa [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) para las referencias de 
 
 ## Probar desde Android
 
-Consulta [MOBILE_TESTING.md](MOBILE_TESTING.md) para abrir Codespaces, ejecutar Waai desde el navegador móvil y validar sus controles táctiles sin depender de un ordenador físico.
+- [Instalar y configurar Waai Shimeji nativo](ANDROID_SHIMEJI.md): descargar APK desde GitHub Actions, emparejar el backend, dar permisos de superposición y activar la iniciativa.
+- [Probar la PWA desde Codespaces](MOBILE_TESTING.md): abrir Waai Home desde el navegador móvil y validar sus controles táctiles.
 
 ## Despliegue
 
