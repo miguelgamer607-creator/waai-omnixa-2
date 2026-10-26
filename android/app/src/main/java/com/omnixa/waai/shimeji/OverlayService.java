@@ -35,6 +35,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public final class OverlayService extends Service {
     public static final String ACTION_STOP = "com.omnixa.waai.shimeji.STOP";
+    public static final String ACTION_HIDE_FOR_CHAT = "com.omnixa.waai.shimeji.HIDE_FOR_CHAT";
+    public static final String ACTION_SHOW_AFTER_CHAT = "com.omnixa.waai.shimeji.SHOW_AFTER_CHAT";
     private static final String CHANNEL = "waai_companion_active";
     private static final String EVENTS_CHANNEL = "waai_companion_events";
     private static final int RUNNING_ID = 401;
@@ -103,6 +105,20 @@ public final class OverlayService extends Service {
             return START_NOT_STICKY;
         }
         WaaiPrefs.store(this).edit().putBoolean(WaaiPrefs.SERVICE_ACTIVE, true).apply();
+        String action = intent == null ? null : intent.getAction();
+        if (ACTION_HIDE_FOR_CHAT.equals(action)) {
+            // Keep the foreground service and proactive scheduler alive, but do not
+            // let the floating view cover the keyboard or chat composer.
+            if (overlayRoot != null) overlayRoot.setVisibility(View.GONE);
+            return START_NOT_STICKY;
+        }
+        if (ACTION_SHOW_AFTER_CHAT.equals(action)) {
+            if (!WaaiPrefs.isOverlayHidden(this)) {
+                if (!overlayAdded) addOverlay();
+                else if (overlayRoot != null) overlayRoot.setVisibility(View.VISIBLE);
+            }
+            return START_NOT_STICKY;
+        }
         if (!WaaiPrefs.isOverlayHidden(this)) addOverlay();
         handler.removeCallbacks(pollRunnable);
         handler.postDelayed(pollRunnable, 25_000L);
