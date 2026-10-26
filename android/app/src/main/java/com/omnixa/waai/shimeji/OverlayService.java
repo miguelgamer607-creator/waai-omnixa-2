@@ -19,7 +19,7 @@ import android.os.Looper;
 import android.os.PowerManager;
 import android.view.Gravity;
 import android.view.MotionEvent;
-import android.view.ServiceInfo;
+import android.content.pm.ServiceInfo;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -338,7 +338,7 @@ public final class OverlayService extends Service {
                 JSONObject response = WaaiNet.request(this, "POST", "/api/companion/proactive",
                     new JSONObject().put("enabled", true));
                 JSONObject event = response.optJSONObject("event");
-                if (event != null) main.post(() -> showProactiveEvent(event));
+                if (event != null) handler.post(() -> showProactiveEvent(event));
             } catch (Exception e) {
                 android.util.Log.i("WaaiShimeji", "Proactive poll skipped: " + e.getMessage());
             } finally {
