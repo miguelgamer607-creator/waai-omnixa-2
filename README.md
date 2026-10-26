@@ -50,6 +50,10 @@ Consulta [AUTONOMY.md](AUTONOMY.md) para conectar un modelo local o remoto compa
 
 Revisa [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) para las referencias de código abierto consultadas y los límites de reutilización. El repositorio no tiene todavía un archivo `LICENSE` en la raíz; decide una licencia del proyecto antes de redistribuirlo como producto abierto.
 
+## Probar desde Android
+
+Consulta [MOBILE_TESTING.md](MOBILE_TESTING.md) para abrir Codespaces, ejecutar Waai desde el navegador móvil y validar sus controles táctiles sin depender de un ordenador físico.
+
 ## Despliegue
 
 - [Guía de despliegue](DEPLOYMENT.md)
