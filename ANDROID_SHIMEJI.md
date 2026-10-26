@@ -37,6 +37,51 @@ El artefacto se puede descargar desde el teléfono; no necesitas instalar Androi
 
 Si detienes y vuelves a crear tu Codespace, comprueba la URL del puerto y actualiza la URL guardada en Waai Shimeji. El servidor de Codespaces puede suspenderse cuando queda inactivo; durante ese tiempo, Waai no puede conversar ni investigar.
 
+## Activar el modelo de conversación e iniciativa
+
+La app Android no contiene una clave ni ejecuta el modelo dentro del teléfono: el modelo se conecta en el backend de Codespaces. Sin las variables de modelo, el chat sigue usando reglas limitadas y los eventos proactivos no se redactan con un modelo generativo.
+
+1. Genera un token aleatorio en la terminal para proteger el servidor:
+
+   ```bash
+   python -c "import secrets; print(secrets.token_urlsafe(36))"
+   ```
+
+   Guarda ese valor de forma privada para usarlo tanto en el entorno del servidor como en Waai Shimeji.
+
+2. Crea un archivo `.env` en la raíz del repositorio desde el explorador de Codespaces. No lo subas a GitHub. Usa esta plantilla y reemplaza los valores señalados:
+
+   ```env
+   APP_ENV=production
+   WAAI_ACCESS_TOKEN=PEGA_AQUI_EL_TOKEN_ALEATORIO
+   DB_PATH=data/waai.db
+   WAAI_TIMEZONE=America/Bogota
+   WAAI_RESEARCH_ENABLED=true
+   WAAI_AUTONOMY_MODE=research
+   WAAI_RESEARCH_INTERESTS=IA y modelos pequeños; herramientas de productividad; automatización para pequeños negocios en Colombia
+   WAAI_AUTONOMY_RESEARCH_HOUR=6
+   WAAI_SHIMEJI_COOLDOWN_MINUTES=240
+   WAAI_LLM_BASE_URL=https://generativelanguage.googleapis.com/v1beta/openai
+   WAAI_LLM_MODEL=gemini-3.6-flash
+   WAAI_LLM_API_KEY=PEGA_AQUI_TU_CLAVE_DE_AI_STUDIO
+   ```
+
+   Para conseguir una clave, usa [Google AI Studio](https://aistudio.google.com/app/apikey). Comprueba el identificador de modelo disponible en tu cuenta si ese ejemplo no está habilitado. La API de Gemini documenta compatibilidad con el formato OpenAI, que es el adaptador utilizado por Waai: [documentación oficial](https://ai.google.dev/gemini-api/docs/openai/).
+
+   **Privacidad:** la modalidad gratuita de Gemini indica que el contenido puede usarse para mejorar los productos de Google. Para esta primera prueba usa información ficticia o no sensible y revisa las condiciones vigentes antes de enviar recuerdos personales o datos privados. Consulta [precios y términos de uso](https://ai.google.dev/gemini-api/docs/pricing?hl=es).
+
+3. Inicia el servidor cargando el archivo `.env`:
+
+   ```bash
+   python -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --env-file .env
+   ```
+
+4. En la pestaña **Ports**, copia la URL HTTPS del puerto 8000. Si Codespaces exige que el puerto sea público para que la app Android acceda, usa esa opción solo con `APP_ENV=production` y el token aleatorio configurado. No publiques el puerto si el servidor sigue en modo desarrollo sin protección.
+5. Pega esa URL y el mismo token en Ajustes de Waai Shimeji y pulsa **Guardar y probar conexión**.
+6. Activa la casilla de iniciativa en Waai Shimeji. El backend podrá investigar un tema de la lista una vez al día; el servicio Android recibirá avisos cuando encuentre contenido real. El servidor debe permanecer activo, y los resultados nunca pasan a memoria permanente sin aprobación.
+
+Si quieres empezar sin una clave de modelo, deja vacías las tres variables `WAAI_LLM_*` y cambia `WAAI_AUTONOMY_MODE=off`. La app seguirá mostrando investigaciones y tareas existentes, pero no redactará check-ins con IA.
+
 ## Activar la superposición
 
 1. Pulsa **Activar Shimeji flotante**.
