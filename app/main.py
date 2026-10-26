@@ -37,7 +37,7 @@ async def lifespan(_: FastAPI):
         except asyncio.CancelledError:
             pass
 
-app = FastAPI(title="Waai · Omnixa", version="0.2.0", description="Private, task-scoped personal assistant foundation", lifespan=lifespan)
+app = FastAPI(title="Waai Companion · Omnixa", version="0.4.0", description="Single-user companion PWA with explicit tools and auditable autonomy", lifespan=lifespan)
 PUBLIC_API_PATHS = {"/api/health", "/api/config"}
 
 @app.middleware("http")
@@ -105,7 +105,7 @@ async def home():
 
 @app.get("/manifest.webmanifest", include_in_schema=False)
 async def manifest():
-    return JSONResponse({"name":"Waai · Omnixa","short_name":"Waai","start_url":"/","display":"standalone","background_color":"#15121b","theme_color":"#21172b","description":"Secretaria personal de Omnixa","icons":[{"src":"/static/assets/icon-192.png","sizes":"192x192","type":"image/png"},{"src":"/static/assets/icon-512.png","sizes":"512x512","type":"image/png"}]})
+    return JSONResponse({"name":"Waai Companion · Omnixa","short_name":"Waai","start_url":"/","display":"standalone","background_color":"#121017","theme_color":"#17131e","description":"Secretaria personal de Omnixa","icons":[{"src":"/static/assets/icon-192.png","sizes":"192x192","type":"image/png"},{"src":"/static/assets/icon-512.png","sizes":"512x512","type":"image/png"}]})
 
 @app.get("/sw.js", include_in_schema=False)
 async def service_worker():
