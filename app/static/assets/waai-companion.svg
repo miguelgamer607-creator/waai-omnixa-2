@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 360" role="img" aria-labelledby="title desc">
+<title id="title">Waai, mascota digital de Omnixa</title>
+<desc id="desc">Pequeña mascota original con rasgos de tigre, cabello naranja, ropa oscura y detalles violeta.</desc>
+<defs>
+ <linearGradient id="hair" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffcb83"/><stop offset=".48" stop-color="#ff8a4f"/><stop offset="1" stop-color="#d84346"/></linearGradient>
+ <linearGradient id="coat" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#3d2d50"/><stop offset="1" stop-color="#171523"/></linearGradient>
+ <linearGradient id="skin" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#ffdec9"/><stop offset="1" stop-color="#e8a990"/></linearGradient>
+ <linearGradient id="eye" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#b7e9ff"/><stop offset=".55" stop-color="#8c7bde"/><stop offset="1" stop-color="#5b376d"/></linearGradient>
+ <radialGradient id="halo"><stop stop-color="#b78bff" stop-opacity=".28"/><stop offset="1" stop-color="#b78bff" stop-opacity="0"/></radialGradient>
+ <filter id="shadow" x="-30%" y="-25%" width="160%" height="170%"><feDropShadow dx="0" dy="10" stdDeviation="8" flood-color="#0b0610" flood-opacity=".38"/></filter>
+</defs>
+<ellipse cx="158" cy="319" rx="98" ry="20" fill="#05030b" opacity=".26"/>
+<ellipse cx="160" cy="172" rx="145" ry="155" fill="url(#halo)"/>
+<g id="tail">
+ <path d="M218 264 C282 268 285 210 257 204 C234 199 232 231 254 232" fill="none" stroke="#d95a4b" stroke-width="19" stroke-linecap="round"/>
+ <path d="M259 216 l-5 13" fill="none" stroke="#34243e" stroke-width="8" stroke-linecap="round"/>
+</g>
+<g filter="url(#shadow)">
+ <!-- tiger ears -->
+ <path d="M88 115 L69 34 Q68 19 82 30 L129 73 Z" fill="#352339" stroke="#201628" stroke-width="5" stroke-linejoin="round"/>
+ <path d="M82 44 L94 78 L78 80 Z" fill="#f08b7a"/>
+ <path d="M198 77 L246 29 Q260 20 258 39 L243 115 Z" fill="#352339" stroke="#201628" stroke-width="5" stroke-linejoin="round"/>
+ <path d="M241 43 L235 79 L223 69 Z" fill="#f08b7a"/>
+ <!-- body -->
+ <path d="M87 218 Q92 184 121 179 L200 179 Q230 192 238 230 L260 297 Q257 315 237 317 L80 317 Q61 313 67 293 Z" fill="url(#coat)" stroke="#100d18" stroke-width="5"/>
+ <path d="M123 190 Q160 219 199 188 L219 303 L98 303 Z" fill="#ebe5ee"/>
+ <path d="M124 190 L142 224 L121 240 L105 208 Z" fill="#aa8be8"/>
+ <path d="M198 190 L177 224 L201 242 L217 207 Z" fill="#ea8b60"/>
+ <path d="M132 220 L157 245 L183 220 L178 302 L140 302 Z" fill="#272036"/>
+ <path d="M139 239 L158 253 L176 239" fill="none" stroke="#ffbd77" stroke-width="5" stroke-linecap="round"/>
+ <circle cx="158" cy="272" r="7" fill="#c49aff"/><circle cx="158" cy="289" r="5" fill="#c49aff"/>
+ <!-- shoulders / sleeves -->
+ <path d="M103 207 Q77 209 72 247 L82 276 L108 267 L122 224 Z" fill="#4e3b62" stroke="#181324" stroke-width="4"/>
+ <path d="M211 207 Q239 217 242 248 L232 279 L207 269 L193 224 Z" fill="#4e3b62" stroke="#181324" stroke-width="4"/>
+ <path d="M72 249 l12 9 M77 238 l12 7 M232 247 l-11 9 M227 236 l-11 7" stroke="#ff9b65" stroke-width="6" stroke-linecap="round"/>
+ <!-- neck -->
+ <path d="M131 166 L130 197 Q157 221 188 195 L185 163 Z" fill="url(#skin)"/>
+ <!-- hair behind face -->
+ <path d="M86 133 Q85 69 154 63 Q223 62 233 126 Q241 177 210 209 L190 189 L121 198 L98 177 Z" fill="url(#hair)" stroke="#32213c" stroke-width="5" stroke-linejoin="round"/>
+ <!-- face -->
+ <path d="M106 119 Q116 86 159 87 Q204 87 214 123 L204 163 Q191 188 160 192 Q127 187 114 161 Z" fill="url(#skin)" stroke="#6c3d4c" stroke-width="3"/>
+ <!-- side hair tufts -->
+ <path d="M108 115 Q83 133 101 177 L117 189 L126 166 Z" fill="#ed714d"/>
+ <path d="M205 116 Q232 137 218 176 L200 192 L193 162 Z" fill="#e75b4d"/>
+ <!-- eye patches and eyes -->
+ <path d="M119 132 Q133 116 148 132 Q137 149 120 145 Z" fill="#fff5ef"/>
+ <path d="M170 131 Q188 115 201 132 L199 145 Q182 149 170 131 Z" fill="#fff5ef"/>
+ <g id="eyes">
+   <ellipse cx="135" cy="137" rx="9" ry="13" fill="url(#eye)"/><ellipse cx="184" cy="137" rx="9" ry="13" fill="url(#eye)"/>
+   <ellipse cx="137" cy="137" rx="3.4" ry="7" fill="#24192e"/><ellipse cx="186" cy="137" rx="3.4" ry="7" fill="#24192e"/>
+   <circle cx="132" cy="132" r="3.5" fill="#fff"/><circle cx="181" cy="132" r="3.5" fill="#fff"/>
+ </g>
+ <g id="blink" opacity="0">
+   <path d="M122 137 Q135 144 148 136 M171 136 Q184 144 198 136" fill="none" stroke="#57344a" stroke-width="5" stroke-linecap="round"/>
+ </g>
+ <path d="M113 127 Q132 115 148 126 M170 126 Q187 115 202 126" fill="none" stroke="#743c45" stroke-width="4" stroke-linecap="round"/>
+ <!-- tiger markings -->
+ <path d="M149 94 L140 112 L153 108 Z M170 94 L181 111 L169 107 Z" fill="#3a253d"/>
+ <path d="M113 151 l15 6 -13 5 M205 151 l-15 6 13 5" fill="none" stroke="#c85d55" stroke-width="4" stroke-linecap="round"/>
+ <!-- nose and smile -->
+ <path d="M154 151 Q160 146 166 151 L160 157 Z" fill="#8d5366"/>
+ <path d="M160 157 Q154 165 148 160 M160 157 Q166 165 173 160" fill="none" stroke="#8d5366" stroke-width="2.5" stroke-linecap="round"/>
+ <path d="M151 175 Q160 181 169 175" fill="none" stroke="#c96f79" stroke-width="3" stroke-linecap="round"/>
+ <!-- hair fringe -->
+ <path d="M99 124 Q92 82 128 73 Q161 59 196 81 Q219 98 215 122 L200 115 L186 96 L173 120 L158 103 L143 124 L135 103 L120 120 Z" fill="url(#hair)" stroke="#32213c" stroke-width="4" stroke-linejoin="round"/>
+ <path d="M151 75 Q141 91 144 105 M182 79 Q201 93 198 104" fill="none" stroke="#ffd39b" stroke-width="5" stroke-linecap="round" opacity=".86"/>
+ <!-- hair bow / tiny pin -->
+ <path d="M214 91 L231 79 L228 99 L240 109 L219 111 Z" fill="#c4a0ff" stroke="#32213c" stroke-width="3" stroke-linejoin="round"/>
+ <circle cx="225" cy="99" r="4" fill="#fff2c8"/>
+ <!-- scarf -->
+ <path d="M119 183 Q154 206 201 177 L211 198 Q173 231 119 207 Z" fill="#6fd0d4" stroke="#203144" stroke-width="4"/>
+ <path d="M199 188 L235 216 L211 224 L184 201 Z" fill="#4b9ca9" stroke="#203144" stroke-width="4"/>
+ <!-- small chest emblem -->
+ <path d="M157 265 L165 276 L157 287 L149 276 Z" fill="#ffb45d"/><circle cx="157" cy="276" r="3" fill="#fff4da"/>
+</g>
+<!-- subtly animated ears / tail / blink -->
+<animateTransform href="#tail" attributeName="transform" type="rotate" values="-2 218 264;3 218 264;-2 218 264" dur="3.8s" repeatCount="indefinite"/>
+<animate attributeName="opacity" values="1;1;1;1" dur="5s" repeatCount="indefinite"/>
+<g>
+ <animate attributeName="opacity" values="0;0;1;0;0" keyTimes="0;0.44;0.46;0.5;1" dur="4.2s" repeatCount="indefinite"/>
+ <path d="M122 137 Q135 144 148 136 M171 136 Q184 144 198 136" fill="none" stroke="#57344a" stroke-width="5" stroke-linecap="round"/>
+</g>
+</svg>
