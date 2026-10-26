@@ -311,7 +311,7 @@ async function loadHome(){
   if(!overview.unread_notifications&&!overview.research_pending)feed.append(textNode('p','Sin alertas urgentes. Puedo ayudarte a planear una prioridad o investigar un tema cuando lo necesites.','muted'));
   const config=await api('/api/config');
   $('initiativeNote').textContent=config.autonomy_mode==='research'&&config.autonomous_research_interests>0?'Iniciativa activada: puedo investigar un tema de tu lista diaria mientras el servidor esté funcionando. Los resultados quedan como borradores, no como memoria automática.':'La iniciativa automática está desactivada o no tiene temas autorizados. Puedes configurarla desde el servidor siguiendo la guía de Ajustes.';
-  if(config.llm_connected){$('chatMode').textContent='Modelo conectado · '+(config.llm_model||'');$('modelName').textContent=config.llm_model||'Modelo conectado';$('modelDescription').textContent='Conversación generativa disponible.'}
+  if(config.llm_connected){$('chatMode').textContent='Modelo configurado · '+(config.llm_model||'');$('modelName').textContent=config.llm_model||'Modelo configurado';$('modelDescription').textContent='Endpoint configurado; su disponibilidad se confirma al responder.'}
   else{$('modelName').textContent='Modo de reglas';$('modelDescription').textContent='No hay un modelo lingüístico configurado; el motor de conversación es limitado.'}
   $('researchMode').textContent=config.research_provider_connected?'Activada':'Desactivada';
   $('autonomyMode').textContent=config.autonomy_mode==='research'&&config.autonomous_research_interests>0?'Activa':'Desactivada';
@@ -326,7 +326,7 @@ async function loadConfig(){
  try{
   const config=await api('/api/config');$('token').value=localStorage.getItem(tokenKey)||'';
   $('modelName').textContent=config.llm_connected?(config.llm_model||'Modelo conectado'):'Modo de reglas';
-  $('modelDescription').textContent=config.llm_connected?'La conversación generativa está disponible a través del proveedor configurado.':'No se detectó un modelo lingüístico. Las respuestas siguen usando reglas básicas.';
+  $('modelDescription').textContent=config.llm_connected?'Endpoint configurado; su disponibilidad se confirma al responder.':'No se detectó un modelo lingüístico. Las respuestas siguen usando reglas básicas.';
   $('researchMode').textContent=config.research_provider_connected?'Activada':'Desactivada';
   $('autonomyMode').textContent=config.autonomy_mode==='research'&&config.autonomous_research_interests>0?'Activa · '+config.autonomous_research_interests+' temas':'Desactivada';
   $('timezoneMode').textContent=config.timezone||'America/Bogota';
