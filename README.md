@@ -1,12 +1,14 @@
 # Waai · Omnixa
 
-**Foundation v0.2.0** · Aplicación web instalable (PWA) · Python/FastAPI · SQLite · Español
+**Waai Companion v0.4.0** · Aplicación web instalable (PWA) · Python/FastAPI · SQLite · Español
 
 Waai empieza como secretaria digital con conversación básica, tareas, recordatorios, informes, memoria autorizada e investigaciones asignadas explícitamente. Este repositorio es la única base de desarrollo del proyecto.
 
 ## Funciones actuales
 
-- Interfaz móvil instalable en navegadores compatibles.
+- Interfaz móvil instalable (PWA) con mascota original SVG animada, estados visuales y burbuja flotante arrastrable dentro de la aplicación.
+- CSS y JavaScript locales, sin CDN ni librerías de interfaz remotas; los resultados de investigación se dibujan con APIs del DOM, no como HTML ejecutable.
+- Caché offline limitada a la carcasa estática; las rutas `/api/` nunca se guardan en la caché del navegador.
 - API Python con persistencia SQLite para tareas, conversación, recuerdos, encargos de investigación, conocimiento aprobado y notificaciones.
 - Reglas conversacionales en español, con proveedor opcional compatible con OpenAI para conversación generativa y síntesis preliminar de investigaciones.
 - Interfaz móvil con retrato de personaje configurable desde el teléfono; la imagen se queda en ese navegador.
@@ -17,6 +19,9 @@ Waai empieza como secretaria digital con conversación básica, tareas, recordat
 - Protección básica con token en modo producción; nunca se incluyen credenciales en el código.
 
 ## Límites importantes
+
+- La mascota flotante funciona dentro de la aplicación web. La superposición por encima de otras apps de Android y el escritorio nativo son etapas posteriores.
+- La animación y la personalidad de Waai no implican consciencia. Las investigaciones programadas dependen de que el servidor siga activo.
 
 - **No se incluye un modelo neuronal ni autoentrenamiento.** Para habilitar conversación generativa debes configurar un endpoint compatible; sin ello, Waai responde mediante reglas.
 - La búsqueda web puede depender de la disponibilidad del proveedor y debe probarse después del despliegue.
@@ -40,6 +45,10 @@ En Windows PowerShell activa con `.venv\Scripts\Activate.ps1` y configura las va
 ## Modelo lingüístico e iniciativa
 
 Consulta [AUTONOMY.md](AUTONOMY.md) para conectar un modelo local o remoto compatible y activar investigaciones diarias por temas autorizados. Ambos sistemas están apagados o sin configurar por defecto; la memoria permanente siempre requiere aprobación.
+
+## Procedencia y licencias
+
+Revisa [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) para las referencias de código abierto consultadas y los límites de reutilización. El repositorio no tiene todavía un archivo `LICENSE` en la raíz; decide una licencia del proyecto antes de redistribuirlo como producto abierto.
 
 ## Despliegue
 
