@@ -72,9 +72,9 @@ def _recent_research_summary() -> str:
                 (row["id"],),
             ).fetchall()
             for source in sources:
-                line += f"\\n  - {source['title']}: {source['url']}"
+                line += f"\n  - {source['title']}: {source['url']}"
             lines.append(line)
-    return "Estas son las investigaciones recientes que figuran en el registro de Waai:\\n" + "\\n".join(lines) + "\\nLos extractos no equivalen a una revisión completa de las páginas."
+    return "Estas son las investigaciones recientes que figuran en el registro de Waai:\n" + "\n".join(lines) + "\nLos extractos no equivalen a una revisión completa de las páginas."
 
 
 def _knowledge_summary(query: str) -> str:
