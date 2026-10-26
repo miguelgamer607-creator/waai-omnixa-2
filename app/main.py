@@ -37,7 +37,7 @@ async def lifespan(_: FastAPI):
         except asyncio.CancelledError:
             pass
 
-app = FastAPI(title="Waai Companion · Omnixa", version="0.4.0", description="Single-user companion PWA with explicit tools and auditable autonomy", lifespan=lifespan)
+app = FastAPI(title="Waai Companion · Omnixa", version="0.4.1", description="Single-user companion PWA with explicit tools and auditable autonomy", lifespan=lifespan)
 PUBLIC_API_PATHS = {"/api/health", "/api/config"}
 
 @app.middleware("http")
@@ -112,7 +112,7 @@ async def service_worker():
     # Cache only the app shell and static assets. API responses (including memory,
     # chat and tasks) are never cached by the service worker.
     script = """
-const CACHE = 'waai-shell-0.4.0';
+const CACHE = 'waai-shell-0.4.1';
 const SHELL = ['/', '/manifest.webmanifest', '/static/assets/companion.css',
   '/static/assets/companion.js', '/static/assets/waai-companion.svg'];
 self.addEventListener('install', event => {
