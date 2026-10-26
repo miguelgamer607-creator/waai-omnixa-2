@@ -46,3 +46,21 @@ El sistema puede proponer una prioridad, ejecutar investigaciones limitadas seg�
 La PWA nueva utiliza la mascota SVG local y recursos CSS/JavaScript servidos desde la propia aplicación. Desde **Ajustes** puedes usar un retrato propio. Este archivo solo se guarda en el almacenamiento del navegador, por lo que no se sincroniza con otros navegadores o dispositivos. La burbuja del personaje se puede mover dentro de la interfaz; todavía no es una ventana flotante del sistema operativo.
 
 Consulta `THIRD_PARTY_NOTICES.md` para ver qué referencias de código abierto se revisaron y qué no se copió. El proyecto aún no define una licencia raíz.
+
+
+## Shimeji Android (v0.5.0)
+
+La app nativa usa el endpoint `POST /api/companion/turn` para conversar y devolver una propuesta de acción de una lista permitida. El endpoint no abre enlaces ni reproduce contenido; Android solo ejecuta esas acciones tras un toque en el botón correspondiente.
+
+El endpoint `POST /api/companion/proactive` solo entrega eventos cuando el cliente manda `enabled: true`. La app Android deja esa casilla apagada por defecto, aplica horas de silencio y consulta cada 15 minutos mientras la sesión está activa. El servidor aplica un cooldown para que Waai no genere mensajes recurrentes sin límite.
+
+Para activar la investigación diaria en un servidor, configura:
+```env
+WAAI_RESEARCH_ENABLED=true
+WAAI_AUTONOMY_MODE=research
+WAAI_RESEARCH_INTERESTS=IA y modelos pequeños; herramientas gratuitas de productividad; oportunidades de automatización para pequeños negocios en Colombia
+WAAI_AUTONOMY_RESEARCH_HOUR=6
+WAAI_TIMEZONE=America/Bogota
+```
+
+Para que los comentarios de Waai sean redactados por un modelo generativo, configura además `WAAI_LLM_BASE_URL`, `WAAI_LLM_MODEL` y, si el proveedor requiere autenticación, `WAAI_LLM_API_KEY`. Sin esas variables, el sistema puede mostrar hechos y fuentes ya registrados, pero no debe fingir que ejecutó razonamiento generativo. Protege estas variables en el backend; no incluyas claves en Android, HTML o GitHub.
