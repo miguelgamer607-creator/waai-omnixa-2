@@ -231,11 +231,15 @@ public final class MainActivity extends Activity {
         status("Conectando con Waai Core…");
         io.execute(() -> {
             try {
+                // Probe a protected endpoint as well as the remote service. The
+                // public /api/config endpoint alone would not detect a missing token.
+                JSONObject probe = WaaiNet.request(this, "POST", "/api/companion/proactive",
+                    new JSONObject().put("enabled", false));
                 JSONObject config = WaaiNet.request(this, "GET", "/api/config", null);
-                String model = config.optBoolean("llm_connected", false)
+                String model = config.optBoolean("llm_connected", probe.optBoolean("llm_available", false))
                     ? "Modelo configurado: " + config.optString("llm_model", "proveedor")
                     : "Servidor conectado, pero sigue en modo de reglas: falta configurar un modelo.";
-                String message = "Waai Core respondió correctamente. " + model;
+                String message = "Waai Core y el acceso privado responden correctamente. " + model;
                 main.post(() -> status(message));
             } catch (Exception e) {
                 main.post(() -> status("No pude conectar: " + e.getMessage()));
