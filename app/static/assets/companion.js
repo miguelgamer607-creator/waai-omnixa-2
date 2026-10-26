@@ -254,7 +254,7 @@ async function loadResearch(){
     const link=textNode('a',source.title||source.url);link.href=source.url;link.target='_blank';link.rel='noopener noreferrer';sourceBox.append(link);
     if(source.snippet)sourceBox.append(textNode('p',source.snippet,'muted tiny'));
     sourceBox.append(textNode('div','Recopilado: '+(source.retrieved_at||'fecha no disponible'),'meta'));
-    const actions=document.createElement('div');actions.className='row';actions.append(addButton('Aprobar resumen','primary-btn tiny-btn',()=>approveKnowledge(research.id,source.url,source.title||'',source.snippet||'')));sourceBox.append(actions);item.append(sourceBox);
+    if(research.status!=='saved'){const actions=document.createElement('div');actions.className='row';actions.append(addButton('Aprobar resumen','primary-btn tiny-btn',()=>approveKnowledge(research.id,source.url,source.title||'',source.snippet||'')));sourceBox.append(actions)}else{sourceBox.append(textNode('div','Conocimiento guardado con aprobación.','meta'))}item.append(sourceBox);
    });
    if(research.status!=='saved')item.append(addButton('Reintentar búsqueda','soft-btn tiny-btn',()=>retryResearch(research.id)));
    root.append(item);
@@ -316,7 +316,7 @@ async function loadHome(){
   $('researchMode').textContent=config.research_provider_connected?'Activada':'Desactivada';
   $('autonomyMode').textContent=config.autonomy_mode==='research'&&config.autonomous_research_interests>0?'Activa':'Desactivada';
   $('timezoneMode').textContent=config.timezone||'America/Bogota';
-  $('autonomyInfo') && ($('autonomyInfo').textContent=config.autonomy_mode||'off');
+
  }catch(e){
   $('connection').textContent='Sin conexión o falta token';$('connectionDot').style.background='var(--red)';$('proactive').textContent=e.message;
   $('homeFeed').replaceChildren(textNode('div','No pude leer el resumen. Revisa que el servidor de Waai siga activo.','empty'));
