@@ -340,6 +340,32 @@ function openPetChat(){ $('petBubble').hidden=true;go('chat');$('chatText').focu
 window.addEventListener('beforeinstallprompt',event=>{event.preventDefault();installPrompt=event;$('installBtn').classList.remove('hide')});
 $('installBtn').addEventListener('click',async()=>{if(!installPrompt)return;installPrompt.prompt();await installPrompt.userChoice;installPrompt=null;$('installBtn').classList.add('hide')});
 if('serviceWorker'in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js').catch(()=>{}));
+document.addEventListener('click',event=>{
+ const target=event.target.closest('[data-action]');if(!target)return;
+ const action=target.dataset.action;
+ switch(action){
+  case 'go-chat':go('chat');break;
+  case 'go-research':go('investiga');break;
+  case 'go-tasks':go('tareas');break;
+  case 'refresh-home':loadHome();break;
+  case 'refresh-research':loadResearch();break;
+  case 'refresh-notifications':loadNotifications();break;
+  case 'clear-chat':clearChat();break;
+  case 'priority':startPriorityChat();break;
+  case 'prompt':send(target.dataset.message||'');break;
+  case 'tasks-all':loadTasks('all');break;
+  case 'tasks-pending':loadTasks('pending');break;
+  case 'tasks-completed':loadTasks('completed');break;
+  case 'delete-memories-all':deleteAllMemories();break;
+  case 'mark-all-read':markAllRead();break;
+  case 'clear-avatar':clearAvatar();break;
+  case 'save-token':saveToken();break;
+  case 'clear-token':clearToken();break;
+  case 'open-pet-chat':openPetChat();break;
+  case 'pet-suggest':petSuggest();break;
+  case 'toggle-pet-bubble':togglePetBubble();break;
+ }
+});
 async function boot(){
  await loadHome();
  try{await loadTasks('all');await loadMemories();await loadResearch();await loadNotifications();await loadConfig()}catch{}
