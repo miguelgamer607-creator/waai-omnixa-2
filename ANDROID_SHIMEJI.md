@@ -18,9 +18,22 @@ El artefacto se puede descargar desde el teléfono; no necesitas instalar Androi
 1. Abre Waai Shimeji.
 2. En tu Codespace, mantén el servidor Waai activo y abre la pestaña **Ports / Puertos**.
 3. Copia la URL HTTPS del puerto 8000; debe parecerse a https://NOMBRE-DEL-CODESPACE-8000.app.github.dev.
-4. Pega esa dirección en el campo **URL HTTPS del backend** de Waai Shimeji. No añadas /api al final.
-5. En modo de desarrollo de Codespaces, el token normalmente queda vacío. Si tu servidor está en modo producción, introduce el valor de WAAI_ACCESS_TOKEN configurado en el servidor. No publiques ni compartas ese token.
-6. Pulsa **Guardar y probar conexión**. El estado de la app indicará si el backend contesta y si tiene un modelo configurado.
+4. **Un port privado puede exigir la sesión de GitHub del navegador y no ser accesible desde la app Android.** No conviertas el port en público mientras el backend esté en modo desarrollo sin token.
+5. Si el port privado no permite la conexión nativa, genera un token aleatorio en la terminal:
+
+   ```bash
+   python -c "import secrets; print(secrets.token_urlsafe(36))"
+   ```
+
+   Copia el resultado y arranca el servidor con acceso protegido, sustituyendo EL_TOKEN por ese resultado:
+
+   ```bash
+   APP_ENV=production WAAI_ACCESS_TOKEN='EL_TOKEN' WAAI_RESEARCH_ENABLED=false python -m uvicorn app.main:app --host 0.0.0.0 --port 8000
+   ```
+
+   Solo después de activar este control, puedes cambiar la visibilidad del puerto a **Public** si es necesario para que la app nativa acceda. La API exige el token para tareas, chat, memoria e investigación. El HTML inicial y los assets públicos pueden seguir siendo accesibles; no uses el servidor temporal para datos sensibles.
+6. Pega la URL HTTPS en **URL HTTPS del backend** y el token en el campo de token de Waai Shimeji. No añadas /api al final ni compartas el token.
+7. Pulsa **Guardar y probar conexión**. Esta comprobación llama a un endpoint protegido, así detecta si falta el token.
 
 Si detienes y vuelves a crear tu Codespace, comprueba la URL del puerto y actualiza la URL guardada en Waai Shimeji. El servidor de Codespaces puede suspenderse cuando queda inactivo; durante ese tiempo, Waai no puede conversar ni investigar.
 
