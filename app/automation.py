@@ -1,7 +1,8 @@
-"""Small, auditable autonomy loop for reminders and reports.
+"""Auditable scheduler for reminders, reports, and opt-in daily research.
 
-This module never executes arbitrary code or browses the web. It only inspects
-user-created tasks and creates deduplicated notifications in SQLite.
+The scheduler acts only on user-authored tasks or explicitly configured research
+interests. Research results are saved as source snippets and draft notifications,
+not as permanent knowledge. It never executes code received from the web.
 """
 from __future__ import annotations
 
@@ -151,6 +152,8 @@ async def run_daily_research_initiative(now: datetime | None = None) -> bool:
     """
     mode = os.getenv("WAAI_AUTONOMY_MODE", "off").strip().lower()
     if mode != "research":
+        return False
+    if os.getenv("WAAI_RESEARCH_ENABLED", "true").strip().lower() not in {"1", "true", "yes", "on"}:
         return False
     tz = local_timezone()
     current = now.astimezone(tz) if now else datetime.now(tz)
