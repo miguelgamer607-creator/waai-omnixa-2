@@ -305,18 +305,40 @@ async function loadHome(){
   const homeTasks=$('homeTasks');homeTasks.replaceChildren();
   if(!overview.tasks.length)homeTasks.append(textNode('div','No hay tareas pendientes guardadas. ¿Quieres añadir una?','empty'));
   else overview.tasks.slice(0,4).forEach(t=>homeTasks.append(makeTaskItem(t,true)));
-  const feed=$('homeFeed');feed.replaceChildren();
-  if(overview.unread_notifications>0)feed.append(textNode('div','Tienes '+overview.unread_notifications+' aviso(s) sin leer.','item-title'));
-  if(overview.research_pending>0)feed.append(textNode('p',overview.research_pending+' investigación(es) abiertas o pendientes de revisar.','muted'));
-  if(!overview.unread_notifications&&!overview.research_pending)feed.append(textNode('p','Sin alertas urgentes. Puedo ayudarte a planear una prioridad o investigar un tema cuando lo necesites.','muted'));
   const config=await api('/api/config');
-  $('initiativeNote').textContent=config.autonomy_mode==='research'&&config.autonomous_research_interests>0?'Iniciativa activada: puedo investigar un tema de tu lista diaria mientras el servidor esté funcionando. Los resultados quedan como borradores, no como memoria automática.':'La iniciativa automática está desactivada o no tiene temas autorizados. Puedes configurarla desde el servidor siguiendo la guía de Ajustes.';
-  if(config.llm_connected){$('chatMode').textContent='Modelo configurado · '+(config.llm_model||'');$('modelName').textContent=config.llm_model||'Modelo configurado';$('modelDescription').textContent='Endpoint configurado; su disponibilidad se confirma al responder.'}
-  else{$('modelName').textContent='Modo de reglas';$('modelDescription').textContent='No hay un modelo lingüístico configurado; el motor de conversación es limitado.'}
+  if(config.llm_connected){
+   $('chatMode').textContent='Modelo configurado · '+(config.llm_model||'');
+   $('modelName').textContent=config.llm_model||'Modelo configurado';
+   $('modelDescription').textContent='Endpoint configurado; su disponibilidad se confirma al responder.';
+  }else{
+   $('modelName').textContent='Modo de reglas';
+   $('modelDescription').textContent='No hay un modelo lingüístico configurado; el motor de conversación es limitado.';
+  }
   $('researchMode').textContent=config.research_provider_connected?'Activada':'Desactivada';
   $('autonomyMode').textContent=config.autonomy_mode==='research'&&config.autonomous_research_interests>0?'Activa':'Desactivada';
   $('timezoneMode').textContent=config.timezone||'America/Bogota';
-
+  const feed=$('homeFeed');feed.replaceChildren();
+  const notes=await api('/api/notifications?limit=3');
+  const recentResearch=notes.find(note=>note.kind==='autonomous_research'&&!note.read_at);
+  if(recentResearch){
+   $('proactive').textContent='He preparado una investigación para revisar: '+recentResearch.title+'. Te dejé un aviso con las fuentes disponibles.';
+   $('petBubbleText').textContent='Tengo novedades de una investigación. ¿Quieres revisar lo que encontré?';
+  }
+  if(notes.length){
+   notes.slice(0,3).forEach(note=>{
+    const item=document.createElement('div');item.className='item';
+    const title=textNode('div',note.title,'item-title');
+    const body=textNode('p',note.body.length>210?note.body.slice(0,207)+'…':note.body,'muted tiny');
+    item.append(title,body);
+    if(!note.read_at)item.append(addButton('Abrir avisos','soft-btn tiny-btn',()=>go('avisos')));
+    feed.append(item);
+   });
+  }else{
+   feed.append(textNode('p','Sin avisos recientes. Puedo ayudarte a planear una prioridad o investigar un tema cuando lo necesites.','muted'));
+  }
+  $('initiativeNote').textContent=config.autonomy_mode==='research'&&config.autonomous_research_interests>0
+   ?'Iniciativa activada: puedo investigar un tema de tu lista diaria mientras el servidor esté funcionando. Los resultados quedan como borradores, no como memoria automática.'
+   :'La iniciativa automática está desactivada o no tiene temas autorizados. Puedes configurarla desde el servidor siguiendo la guía de Ajustes.';
  }catch(e){
   $('connection').textContent='Sin conexión o falta token';$('connectionDot').style.background='var(--red)';$('proactive').textContent=e.message;
   $('homeFeed').replaceChildren(textNode('div','No pude leer el resumen. Revisa que el servidor de Waai siga activo.','empty'));
@@ -334,7 +356,7 @@ async function loadConfig(){
 }
 function saveToken(){localStorage.setItem(tokenKey,$('token').value.trim());setStatus('tokenStatus','Token guardado localmente.','ok');loadHome();loadConfig()}
 function clearToken(){localStorage.removeItem(tokenKey);$('token').value='';setStatus('tokenStatus','Token eliminado de este navegador.','ok');loadHome()}
-function petSuggest(){const pending=Number($('tasksN').textContent)||0;const research=Number($('researchN').textContent)||0;$('petBubble').hidden=false;$('petBubbleText').textContent=pending?'Veo '+pending+' pendiente(s). Podemos escoger una acción pequeña para empezar.':research?'Hay '+research+' investigación(es) por revisar. ¿Miramos una?':'¿Qué te parece si empezamos por una idea o una pregunta que tengas rondando?'}
+function petSuggest(){const pending=Number($('tasksN').textContent)||0;const research=Number($('researchN').textContent)||0;const notices=Number($('noticeN').textContent)||0;$('petBubble').hidden=false;$('petBubbleText').textContent=notices?'Tengo '+notices+' aviso(s) que pueden interesarte. ¿Los revisamos?':pending?'Veo '+pending+' pendiente(s). Podemos escoger una acción pequeña para empezar.':research?'Hay '+research+' investigación(es) por revisar. ¿Miramos una?':'¿Qué te parece si empezamos por una idea o una pregunta que tengas rondando?'}
 function openPetChat(){ $('petBubble').hidden=true;go('chat');$('chatText').focus() }
 
 window.addEventListener('beforeinstallprompt',event=>{event.preventDefault();installPrompt=event;$('installBtn').classList.remove('hide')});
@@ -371,5 +393,6 @@ async function boot(){
  try{await loadTasks('all');await loadMemories();await loadResearch();await loadNotifications();await loadConfig()}catch{}
 }
 boot();
+setInterval(()=>{if(!document.hidden){loadHome();if($('avisos').classList.contains('active'))loadNotifications()}},60000);
 window.addEventListener('online',()=>loadHome());
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)loadHome()});
