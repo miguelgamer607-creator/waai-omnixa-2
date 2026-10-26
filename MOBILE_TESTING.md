@@ -18,13 +18,9 @@ git pull --ff-only origin main
 python -m pip install -r requirements.txt
 ```
 
-Si el servidor ya está ejecutándose, pulsa primero dentro de la terminal y usa **Ctrl+C** si el teclado móvil permite enviar la combinación. Si no, abre una segunda terminal con el botón `+` del panel Terminal y ejecuta:
+Si el servidor ya está ejecutándose, pulsa dentro de esa terminal y usa **Ctrl+C**. Si el teclado móvil no permite enviar esa combinación con facilidad, puedes dejar el servidor actual funcionando y abrir su URL desde Puertos. Solo reinícialo si necesitas aplicar cambios del backend; en ese caso, usa los controles de la terminal de Codespaces o identifica el proceso antes de terminarlo, para evitar cerrar la sesión equivocada.
 
-```bash
-pkill -f 'uvicorn app.main:app' || true
-```
-
-Después inicia el servidor:
+Después inicia el servidor si está detenido:
 
 ```bash
 APP_ENV=development WAAI_RESEARCH_ENABLED=false python -m uvicorn app.main:app --host 0.0.0.0 --port 8000
