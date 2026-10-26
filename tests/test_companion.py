@@ -69,6 +69,10 @@ def test_proactive_research_comment_is_deduplicated_and_dismissible(client, monk
 
     monkeypatch.setattr(companion, "model_is_configured", lambda: False)
     when = now_iso()
+    # The app's startup scheduler may create a daily report; this test isolates
+    # research events from unrelated pending notifications.
+    with db_session() as db:
+        db.execute("UPDATE notifications SET read_at=?", (when,))
     with db_session() as db:
         research_id = db.execute(
             "INSERT INTO research(topic,scope,allowed_domains,status,created_at,completed_at) VALUES(?,?,?,?,?,?)",
