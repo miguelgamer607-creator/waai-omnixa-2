@@ -2,7 +2,7 @@
 
 ## Política de este proyecto
 
-Waai Companion 0.4 se construyó para este repositorio con una mascota SVG original, CSS propio y JavaScript propio. No se incorporaron archivos de personajes, paquetes de sprites, binarios ni bloques de código de los proyectos de referencia listados abajo. No carga scripts, fuentes, CSS ni analítica desde CDNs.
+Waai Companion 0.4.1 se construyó para este repositorio con una mascota SVG original, CSS propio y JavaScript propio. No se incorporaron archivos de personajes, paquetes de sprites, binarios ni bloques de código de los proyectos de referencia listados abajo. No carga scripts, fuentes, CSS ni analítica desde CDNs.
 
 Las referencias se consultaron para evaluar patrones de arquitectura, comportamiento y empaquetado. Una licencia abierta autoriza usos de su código conforme a sus condiciones; no convierte automáticamente en reutilizable la marca, los personajes, las ilustraciones, los modelos de IA o los recursos de terceros que el proyecto pudiera enlazar.
 
