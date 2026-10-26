@@ -1,6 +1,6 @@
 # Waai · Omnixa
 
-**Waai Companion v0.5.0** · Aplicación web instalable (PWA) · Python/FastAPI · SQLite · Español
+**Waai Companion v0.5.0** · PWA de gestión + app Android Shimeji · FastAPI · SQLite
 
 Waai empieza como secretaria digital con conversación básica, tareas, recordatorios, informes, memoria autorizada e investigaciones asignadas explícitamente. Este repositorio es la única base de desarrollo del proyecto.
 
@@ -23,7 +23,7 @@ Waai empieza como secretaria digital con conversación básica, tareas, recordat
 
 ## Límites importantes
 
-- La mascota flotante funciona dentro de la aplicación web. La superposición por encima de otras apps de Android y el escritorio nativo son etapas posteriores.
+- La superposición Android está implementada como una primera compilación debug; falta validarla en el teléfono real.
 - La animación y la personalidad de Waai no implican consciencia. Las investigaciones programadas dependen de que el servidor siga activo.
 
 - **No se incluye un modelo neuronal ni autoentrenamiento.** Para habilitar conversación generativa debes configurar un endpoint compatible; sin ello, Waai responde mediante reglas.
@@ -55,8 +55,12 @@ Revisa [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) para las referencias de 
 
 ## Probar desde Android
 
-- [Instalar y configurar Waai Shimeji nativo](ANDROID_SHIMEJI.md): descargar APK desde GitHub Actions, emparejar el backend, dar permisos de superposición y activar la iniciativa.
-- [Probar la PWA desde Codespaces](MOBILE_TESTING.md): abrir Waai Home desde el navegador móvil y validar sus controles táctiles.
+- [Instalar y configurar Waai Shimeji nativo](ANDROID_SHIMEJI.md): descargar el APK de prueba desde GitHub Actions, emparejar el backend y conceder permiso de superposición.
+- [Probar Waai Home desde Codespaces](MOBILE_TESTING.md): validar la PWA desde el navegador móvil.
+
+## Configurar el modelo y la iniciativa
+
+Copia `.env.example` como referencia. El adaptador lingüístico requiere `WAAI_LLM_BASE_URL`, `WAAI_LLM_MODEL` y opcionalmente `WAAI_LLM_API_KEY`. El modo de investigación diaria continúa desactivado hasta que pongas `WAAI_AUTONOMY_MODE=research` y definas `WAAI_RESEARCH_INTERESTS`. Los enlaces y contenidos externos se abren solo después de un toque del usuario. Consulta [ANDROID_SHIMEJI.md](ANDROID_SHIMEJI.md) para configurar el backend desde el celular sin exponerlo desprotegido.
 
 ## Despliegue
 
