@@ -1,5 +1,14 @@
 # Registro de cambios
 
+## 0.5.0 — 2026-10-25
+- Añadida app Android nativa Waai Shimeji con ventana superpuesta, personaje Canvas animado y servicio visible controlado por el usuario.
+- Añadido chat nativo con acciones HTTPS permitidas para búsquedas de imágenes, vídeos, música y web; las acciones externas requieren un toque.
+- Añadida cola persistente de eventos proactivos, deduplicación, descarte de eventos y cooldown para check-ins generados por IA.
+- Añadida API de conversación móvil y endpoint de sondeo proactivo opt-in.
+- Añadidos permisos de superposición y servicio foreground especial con controles explícitos, horario silencioso y sin autoarranque al encender.
+- Añadido workflow para compilar y descargar el APK debug desde GitHub Actions.
+- Añadidos tests para acciones móviles y eventos proactivos.
+
 ## 0.4.1 — 2026-10-25
 - Corregida la invalidación de caché del service worker para que los clientes reciban los archivos estáticos actuales.
 - El feed se actualiza periódicamente, muestra avisos recientes e identifica investigaciones nuevas.
