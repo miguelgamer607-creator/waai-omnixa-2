@@ -55,6 +55,28 @@ def _memory_summary() -> str:
     return "Esto es lo que tengo guardado porque me lo autorizaste:\n" + "\n".join(f"• {r['memory_key']}: {r['memory_value']} ({r['category']})" for r in rows)
 
 
+def _recent_research_summary() -> str:
+    with db_session() as db:
+        rows = db.execute(
+            "SELECT r.id,r.topic,r.status,r.completed_at,(SELECT COUNT(*) FROM research_sources s WHERE s.research_id=r.id) AS source_count "
+            "FROM research r ORDER BY r.id DESC LIMIT 5"
+        ).fetchall()
+    if not rows:
+        return "Todavía no tengo investigaciones registradas. Puedes asignarme un tema y revisar las fuentes que encuentre."
+    lines = []
+    with db_session() as db:
+        for row in rows:
+            line = f"Investigación #{row['id']}: {row['topic']} · estado: {row['status']} · fuentes: {row['source_count']}"
+            sources = db.execute(
+                "SELECT title,url FROM research_sources WHERE research_id=? ORDER BY id LIMIT 3",
+                (row["id"],),
+            ).fetchall()
+            for source in sources:
+                line += f"\\n  - {source['title']}: {source['url']}"
+            lines.append(line)
+    return "Estas son las investigaciones recientes que figuran en el registro de Waai:\\n" + "\\n".join(lines) + "\\nLos extractos no equivalen a una revisión completa de las páginas."
+
+
 def _knowledge_summary(query: str) -> str:
     # Retrieval is opt-in in the conversation: only called for an explicit knowledge question.
     stop_words = {"sobre", "acerca", "qué", "que", "aprendiste", "aprendió", "sabes", "conocimiento", "conocimientos", "consulta", "buscar", "busca", "tus", "mis", "la", "las", "el", "los", "de", "del", "en", "una", "uno", "por", "para", "cómo", "como"}
@@ -101,6 +123,16 @@ def respond(message: str) -> dict[str, Any]:
     safe_reply = safety_gate(text)
     if safe_reply:
         result.update(intent="safety", reply=safe_reply)
+        return result
+
+    research_status_phrases = (
+        "qué investigaste", "que investigaste", "qué has investigado", "que has investigado",
+        "qué encontraste", "que encontraste", "en qué has estado trabajando",
+        "en que has estado trabajando", "qué hiciste mientras tanto", "que hiciste mientras tanto",
+        "novedades de la investigación", "última investigación", "ultima investigacion",
+    )
+    if any(phrase in low for phrase in research_status_phrases):
+        result.update(intent="research_status", reply=_recent_research_summary())
         return result
 
     # Memory is explicit: only phrases such as "recuerda que" store a new item.
