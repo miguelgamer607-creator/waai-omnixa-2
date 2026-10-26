@@ -2,7 +2,7 @@
 
 ## Política de este proyecto
 
-Waai Companion 0.4.1 se construyó para este repositorio con una mascota SVG original, CSS propio y JavaScript propio. No se incorporaron archivos de personajes, paquetes de sprites, binarios ni bloques de código de los proyectos de referencia listados abajo. No carga scripts, fuentes, CSS ni analítica desde CDNs.
+Waai Companion 0.5.0 se construyó para este repositorio con una mascota SVG original, CSS propio y JavaScript propio. No se incorporaron archivos de personajes, paquetes de sprites, binarios ni bloques de código de los proyectos de referencia listados abajo. No carga scripts, fuentes, CSS ni analítica desde CDNs.
 
 Las referencias se consultaron para evaluar patrones de arquitectura, comportamiento y empaquetado. Una licencia abierta autoriza usos de su código conforme a sus condiciones; no convierte automáticamente en reutilizable la marca, los personajes, las ilustraciones, los modelos de IA o los recursos de terceros que el proyecto pudiera enlazar.
 
@@ -53,3 +53,11 @@ Al revisar el repositorio no existía un archivo LICENSE en la raíz, por lo que
 - Los extractos de investigación se tratan como datos no confiables.
 - Las rutas /api/ no se incluyen en la caché offline.
 - Las imágenes personales elegidas en Ajustes se quedan en el almacenamiento local del navegador.
+
+
+## Android Shimeji
+
+- App Android bajo android/: Java y APIs nativas del SDK; no usa bibliotecas Java/Kotlin de terceros en runtime.
+- El personaje flotante se dibuja mediante Canvas y código propio, no a través de sprites descargados.
+- El APK de CI es una compilación debug firmada con la clave de depuración de Gradle. No es un paquete listo para Google Play ni una firma release de distribución.
+- La superposición utiliza las APIs oficiales de Android con permiso explícito SYSTEM_ALERT_WINDOW y un servicio foreground de tipo specialUse; revisar las políticas actuales antes de publicar en una tienda.
