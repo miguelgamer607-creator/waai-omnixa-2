@@ -118,24 +118,13 @@ $('petButton').addEventListener('pointermove',e=>{
 $('petButton').addEventListener('pointerup',()=>{if(dragState&&dragState.moved)suppressPetClick=true;dragState=null});
 $('petButton').addEventListener('pointercancel',()=>{dragState=null});
 
-function openPetChat(){togglePetBubble();go('chat');$('chatText').focus()}
+function openPetChat(){$('petBubble').hidden=true;go('chat');$('chatText').focus()}
 function petSuggest(){
  const pending=Number($('tasksN').textContent)||0;
- togglePetBubble();
+ $('petBubble').hidden=false;
  $('petBubbleText').textContent=pending?'Tienes '+pending+' tarea(s) pendiente(s). ¿Quieres que elijamos una prioridad?':'Podríamos empezar con una idea, una tarea o una investigación corta.';
 }
 function startPriorityChat(){go('chat');send('Ayúdame a escoger una prioridad realista para hoy usando mis tareas pendientes.')}
-$('petButton').addEventListener('pointerdown',e=>{dragState={x:e.clientX,y:e.clientY,left:null,top:null,moved:false,startLeft:$('petDock').getBoundingClientRect().left,startTop:$('petDock').getBoundingClientRect().top};$('petButton').setPointerCapture?.(e.pointerId)});
-$('petButton').addEventListener('pointermove',e=>{
- if(!dragState)return;
- const dx=e.clientX-dragState.x,dy=e.clientY-dragState.y;
- if(!dragState.moved&&Math.hypot(dx,dy)>9)dragState.moved=true;
- if(!dragState.moved)return;
- const dock=$('petDock');dock.style.right='auto';dock.style.left=Math.max(0,Math.min(window.innerWidth-dock.offsetWidth,dragState.startLeft+dx))+'px';dock.style.bottom='auto';dock.style.top=Math.max(65,Math.min(window.innerHeight-dock.offsetHeight-70,dragState.startTop+dy))+'px';
-});
-$('petButton').addEventListener('pointerup',()=>{if(dragState?.moved)suppressPetClick=true;dragState=null});
-$('petButton').addEventListener('pointercancel',()=>{dragState=null});
-
 function bubble(role,content){
  const n=textNode('div',content,'bubble '+role);$('chatlog').append(n);return n;
 }
