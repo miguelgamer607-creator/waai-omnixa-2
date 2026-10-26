@@ -1,5 +1,11 @@
 # Registro de cambios
 
+## 0.4.1 — 2026-10-25
+- Corregida la invalidación de caché del service worker para que los clientes reciban los archivos estáticos actuales.
+- El feed se actualiza periódicamente, muestra avisos recientes e identifica investigaciones nuevas.
+- Mejorado el contexto de modelo para priorizar tareas y responder sobre el historial de investigaciones.
+- Se reforzó el control de versiones de dependencias y la comprobación de CI.
+
 ## 0.4.0 — 2026-10-25
 - Creada la interfaz Waai Companion, centrada en la mascota animada y la conversación.
 - Añadida una mascota SVG original con animación autónoma, estados de actividad y personalización de retrato local.
