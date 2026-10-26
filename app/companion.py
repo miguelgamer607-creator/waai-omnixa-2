@@ -62,6 +62,8 @@ def infer_companion_action(message: str) -> dict[str, str]:
         "",
         query,
     ).strip(" \t\r\n.,;:¡!¿?\"'")
+    query = re.sub(r"(?i)^\\s*(?:imágenes|imagenes|imagen|fotos?|vídeos?|videos?|música|musica|canciones?|playlist)\\s+(?:de|sobre|para)\\s+", "", query)
+    query = re.sub(r"(?i)^\\s*(?:de|del|sobre|acerca de|para)\\s+", "", query).strip()
     query = query[:220]
     if not query and low in {"abre", "abrir"}:
         return action
@@ -191,22 +193,26 @@ async def poll_proactive_event(enabled: bool) -> dict | None:
 
     # 2) Reuse genuine notifications about task deadlines or daily/weekly reports.
     with db_session() as db:
-        notice = db.execute(
+        notices = db.execute(
             "SELECT * FROM notifications WHERE read_at IS NULL "
             "AND kind IN ('autonomous_research','task_due_soon','task_overdue','daily_report','weekly_report') "
-            "ORDER BY CASE kind WHEN 'autonomous_research' THEN 0 WHEN 'task_overdue' THEN 1 WHEN 'task_due_soon' THEN 2 ELSE 3 END, id DESC LIMIT 1"
-        ).fetchone()
-        if notice:
-            event_key = f"notification:{notice['id']}"
+            "ORDER BY CASE kind WHEN 'autonomous_research' THEN 0 WHEN 'task_overdue' THEN 1 WHEN 'task_due_soon' THEN 2 ELSE 3 END, id DESC LIMIT 20"
+        ).fetchall()
+        notice = None
+        for candidate_notice in notices:
+            event_key = f"notification:{candidate_notice['id']}"
             existing = db.execute("SELECT id FROM companion_events WHERE event_key=?", (event_key,)).fetchone()
-            if not existing:
-                kind = "research_comment" if notice["kind"] == "autonomous_research" else "task_checkin"
-                message = f"{notice['title']}. {notice['body']}"
-                db.execute(
-                    "INSERT OR IGNORE INTO companion_events(event_key,kind,title,message,action_type,action_query,action_url,created_at) "
-                    "VALUES(?,?,?,?,?,?,?,?)",
-                    (event_key, kind, notice["title"][:120], message[:1800], "none", "", "", _now()),
-                )
+            if existing:
+                continue
+            notice = candidate_notice
+            kind = "research_comment" if notice["kind"] == "autonomous_research" else "task_checkin"
+            message = f"{notice['title']}. {notice['body']}"
+            db.execute(
+                "INSERT OR IGNORE INTO companion_events(event_key,kind,title,message,action_type,action_query,action_url,created_at) "
+                "VALUES(?,?,?,?,?,?,?,?)",
+                (event_key, kind, notice["title"][:120], message[:1800], "none", "", "", _now()),
+            )
+            break
     if notice:
         return await _deliver_next()
 
