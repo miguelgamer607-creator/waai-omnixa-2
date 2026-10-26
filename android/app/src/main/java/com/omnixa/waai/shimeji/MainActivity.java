@@ -277,6 +277,8 @@ public final class MainActivity extends Activity {
             status("No se concedió el permiso de superposición.");
             return;
         }
+        // An explicit user start overrides a previous temporary pause.
+        WaaiPrefs.store(this).edit().putLong(WaaiPrefs.HIDE_UNTIL, 0L).apply();
         Intent intent = new Intent(this, OverlayService.class);
         if (Build.VERSION.SDK_INT >= 26) startForegroundService(intent);
         else startService(intent);
