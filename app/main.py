@@ -51,7 +51,19 @@ async def access_control(request: Request, call_next):
                 return Response("Server access token is not safely configured; replace the example secret in .env.", status_code=503)
             if not supplied or not hmac.compare_digest(supplied, expected):
                 return Response("Se necesita el token de acceso privado.", status_code=401, headers={"WWW-Authenticate": "Bearer"})
-    return await call_next(request)
+    response = await call_next(request)
+    response.headers.setdefault("X-Content-Type-Options", "nosniff")
+    response.headers.setdefault("Referrer-Policy", "strict-origin-when-cross-origin")
+    response.headers.setdefault("X-Frame-Options", "DENY")
+    response.headers.setdefault("Permissions-Policy", "camera=(), geolocation=(), microphone=()")
+    response.headers.setdefault(
+        "Content-Security-Policy",
+        "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; "
+        "img-src 'self' data: blob:; connect-src 'self'; object-src 'none'; "
+        "base-uri 'self'; form-action 'self'; frame-ancestors 'none'; "
+        "manifest-src 'self'; worker-src 'self'"
+    )
+    return response
 
 app.mount("/static", StaticFiles(directory=STATIC_DIR, check_dir=False), name="static")
 
@@ -97,15 +109,67 @@ async def manifest():
 
 @app.get("/sw.js", include_in_schema=False)
 async def service_worker():
-    return Response("self.addEventListener('fetch', e => { const u=new URL(e.request.url); if (u.pathname.startsWith('/api/')) return; });", media_type="application/javascript", headers={"Service-Worker-Allowed": "/"})
+    # Cache only the app shell and static assets. API responses (including memory,
+    # chat and tasks) are never cached by the service worker.
+    script = """
+const CACHE = 'waai-shell-0.4.0';
+const SHELL = ['/', '/manifest.webmanifest', '/static/assets/companion.css',
+  '/static/assets/companion.js', '/static/assets/waai-companion.svg'];
+self.addEventListener('install', event => {
+  event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(SHELL)).then(() => self.skipWaiting()));
+});
+self.addEventListener('activate', event => {
+  event.waitUntil(caches.keys().then(keys => Promise.all(
+    keys.filter(key => key.startsWith('waai-shell-') && key !== CACHE).map(key => caches.delete(key))
+  )).then(() => self.clients.claim()));
+});
+self.addEventListener('fetch', event => {
+  const request = event.request;
+  const url = new URL(request.url);
+  if (request.method !== 'GET' || url.origin !== self.location.origin || url.pathname.startsWith('/api/') || url.pathname === '/sw.js') return;
+  if (request.mode === 'navigate') {
+    event.respondWith(fetch(request).then(response => {
+      if (response.ok) caches.open(CACHE).then(cache => cache.put('/', response.clone()));
+      return response;
+    }).catch(async () => (await caches.match('/')) || new Response('Waai está sin conexión. Reconéctate y vuelve a intentarlo.', {status: 503, headers: {'Content-Type': 'text/plain; charset=utf-8'}})));
+    return;
+  }
+  if (url.pathname.startsWith('/static/') || url.pathname === '/manifest.webmanifest') {
+    event.respondWith(caches.match(request).then(cached => cached || fetch(request).then(response => {
+      if (response.ok) caches.open(CACHE).then(cache => cache.put(request, response.clone()));
+      return response;
+    })));
+  }
+});
+"""
+    return Response(script, media_type="application/javascript", headers={"Service-Worker-Allowed": "/", "Cache-Control": "no-cache"})
 
 @app.get("/api/health")
 async def health():
     return {"status":"ok","service":"waai-omnixa","version":app.version}
 
+def _bounded_env_int(name: str, default: int, minimum: int, maximum: int) -> int:
+    try:
+        value = int(os.getenv(name, str(default)))
+    except (TypeError, ValueError):
+        value = default
+    return max(minimum, min(maximum, value))
+
+
 @app.get("/api/config")
 async def config():
-    return {"auth_required":os.getenv("APP_ENV","development").lower()=="production","assistant_mode":"llm+rules+automation" if model_is_configured() else "rules+automation","automation_enabled":True,"timezone":os.getenv("WAAI_TIMEZONE","America/Bogota"),"research_provider_connected":os.getenv("WAAI_RESEARCH_ENABLED","true").lower() in {"1","true","yes","on"},"llm_connected":model_is_configured(),"llm_model":model_name() if model_is_configured() else None,"autonomy_mode":os.getenv("WAAI_AUTONOMY_MODE","off").strip().lower(),"autonomous_research_interests":len([x for x in os.getenv("WAAI_RESEARCH_INTERESTS","").split(";") if x.strip()]),"autonomous_research_hour":int(os.getenv("WAAI_AUTONOMY_RESEARCH_HOUR","6"))}
+    return {
+        "auth_required": os.getenv("APP_ENV", "development").lower() == "production",
+        "assistant_mode": "llm+rules+automation" if model_is_configured() else "rules+automation",
+        "automation_enabled": True,
+        "timezone": os.getenv("WAAI_TIMEZONE", "America/Bogota"),
+        "research_provider_connected": os.getenv("WAAI_RESEARCH_ENABLED", "true").lower() in {"1", "true", "yes", "on"},
+        "llm_connected": model_is_configured(),
+        "llm_model": model_name() if model_is_configured() else None,
+        "autonomy_mode": os.getenv("WAAI_AUTONOMY_MODE", "off").strip().lower(),
+        "autonomous_research_interests": len([x for x in os.getenv("WAAI_RESEARCH_INTERESTS", "").split(";") if x.strip()]),
+        "autonomous_research_hour": _bounded_env_int("WAAI_AUTONOMY_RESEARCH_HOUR", 6, 0, 23),
+    }
 
 @app.get("/api/overview")
 async def overview():
@@ -209,7 +273,7 @@ async def chat(payload:ChatInput):
         history = [dict(row) for row in reversed(history_rows)]
         approved_knowledge = [dict(row) for row in knowledge_rows]
         task_lines = [f"- {row['title']} (prioridad {row['priority']}" + (f", fecha {row['due_at']}" if row["due_at"] else "") + ")" for row in task_rows]
-        context_note = "Tareas pendientes actuales verificadas por la aplicación:\\n" + ("\\n".join(task_lines) if task_lines else "No hay tareas pendientes guardadas.") + "\\nPropón prioridades de forma realista; no declares una tarea completada ni cambies datos."
+        context_note = "Tareas pendientes actuales verificadas por la aplicación:\n" + ("\n".join(task_lines) if task_lines else "No hay tareas pendientes guardadas.") + "\nPropón prioridades de forma realista; no declares una tarea completada ni cambies datos.""
         try:
             reply["reply"] = await generate_reply(messages=history, approved_knowledge=approved_knowledge, context_note=context_note)
             reply["llm_used"] = True
