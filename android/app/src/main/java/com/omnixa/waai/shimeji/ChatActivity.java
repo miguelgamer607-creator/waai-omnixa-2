@@ -115,42 +115,14 @@ public final class ChatActivity extends Activity {
         status.setText("Conectando con Waai Core…");
         io.execute(() -> {
             try {
-                JSONArray history = WaaiNet.request(this, "GET", "/api/chat/history?limit=40", null).has("items")
-                    ? WaaiNet.request(this, "GET", "/api/chat/history?limit=40", null).optJSONArray("items")
-                    : null;
-                // The current API returns a top-level array. Read it directly on the normal path.
-                JSONArray messages = history;
-                try {
-                    java.net.URL url = new java.net.URL(WaaiPrefs.baseUrl(this) + "/api/chat/history?limit=40");
-                    java.net.HttpURLConnection con = (java.net.HttpURLConnection) url.openConnection();
-                    con.setRequestMethod("GET");
-                    con.setConnectTimeout(12000);
-                    con.setReadTimeout(18000);
-                    con.setRequestProperty("Accept", "application/json");
-                    String token = WaaiPrefs.token(this);
-                    if (!token.isEmpty()) con.setRequestProperty("Authorization", "Bearer " + token);
-                    java.io.InputStream input = con.getInputStream();
-                    java.io.ByteArrayOutputStream buffer = new java.io.ByteArrayOutputStream();
-                    byte[] bytes = new byte[4096];
-                    int read;
-                    while ((read = input.read(bytes)) != -1) buffer.write(bytes, 0, read);
-                    input.close();
-                    con.disconnect();
-                    messages = new JSONArray(buffer.toString(java.nio.charset.StandardCharsets.UTF_8.name()));
-                } catch (Exception ignored) {
-                    // If history is unavailable, the chat itself can still work.
-                    messages = null;
-                }
-                JSONArray finalMessages = messages;
+                JSONArray messages = WaaiNet.requestArray(this, "GET", "/api/chat/history?limit=40", null);
                 main.post(() -> {
-                    if (finalMessages != null) {
-                        for (int i = 0; i < finalMessages.length(); i++) {
-                            JSONObject message = finalMessages.optJSONObject(i);
-                            if (message == null) continue;
-                            String role = message.optString("role", "assistant");
-                            addMessage(role.equals("user") ? "Tú" : "Waai", message.optString("content", ""),
-                                role.equals("user"));
-                        }
+                    for (int i = 0; i < messages.length(); i++) {
+                        JSONObject message = messages.optJSONObject(i);
+                        if (message == null) continue;
+                        String role = message.optString("role", "assistant");
+                        addMessage(role.equals("user") ? "Tú" : "Waai", message.optString("content", ""),
+                            role.equals("user"));
                     }
                     if (messageList.getChildCount() == 0) {
                         addMessage("Waai", "Hola. ¿Qué tienes en mente? Podemos conversar, investigar o buscar imágenes, videos y música.", false);
