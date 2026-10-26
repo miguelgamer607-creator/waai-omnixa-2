@@ -261,6 +261,7 @@ public final class MainActivity extends Activity {
     private void requestNotificationOrStart() {
         if (Build.VERSION.SDK_INT >= 33 &&
             checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != android.content.pm.PackageManager.PERMISSION_GRANTED) {
+            pendingStartOnResume = false;
             requestPermissions(new String[]{Manifest.permission.POST_NOTIFICATIONS}, REQUEST_NOTIFICATIONS);
             return;
         }
@@ -285,6 +286,7 @@ public final class MainActivity extends Activity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_OVERLAY) {
+            pendingStartOnResume = false;
             if (Settings.canDrawOverlays(this)) requestNotificationOrStart();
             else {
                 pendingStartOnResume = false;
