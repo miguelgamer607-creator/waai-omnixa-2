@@ -20,6 +20,7 @@ from .automation import automation_loop
 from .research_web import run_research_job
 from .db import db_session, init_db
 from .llm import generate_reply, model_is_configured, model_name
+from .companion import dismiss_proactive_event, infer_companion_action, poll_proactive_event
 
 BASE_DIR = Path(__file__).resolve().parent
 STATIC_DIR = BASE_DIR / "static"
@@ -82,6 +83,14 @@ class TaskUpdate(BaseModel):
 
 class ChatInput(BaseModel):
     message: str = Field(min_length=1, max_length=4000)
+
+
+class CompanionTurnInput(BaseModel):
+    message: str = Field(min_length=1, max_length=4000)
+
+
+class ProactivePollInput(BaseModel):
+    enabled: bool = False
 
 class MemoryCreate(BaseModel):
     category: str = Field(default="preference", min_length=1, max_length=60)
@@ -319,6 +328,47 @@ async def chat(payload:ChatInput):
     with db_session() as db:
         db.execute("INSERT INTO messages(role,content,created_at) VALUES('assistant',?,?)",(reply.get("reply",""),now_iso()))
     return reply
+
+@app.post("/api/companion/turn")
+async def companion_turn(payload: CompanionTurnInput):
+    """Chat turn for the native Shimeji, with a fixed allow-list of user-triggered actions."""
+    result = await chat(ChatInput(message=payload.message))
+    action = infer_companion_action(payload.message)
+    if result.get("intent") == "research_assigned":
+        action = {
+            "type": "research",
+            "label": "Revisar investigación",
+            "query": str(result.get("research", {}).get("topic", payload.message))[:220],
+            "url": "",
+        }
+        sources = result.get("sources") or []
+        if sources and isinstance(sources[0], dict):
+            candidate = str(sources[0].get("url", ""))
+            if candidate.startswith("https://"):
+                action["url"] = candidate
+                action["type"] = "research_source"
+                action["label"] = "Abrir primera fuente"
+    result["companion_action"] = action
+    return result
+
+
+@app.post("/api/companion/proactive")
+async def companion_proactive(payload: ProactivePollInput):
+    """Opt-in polling endpoint. It returns at most one saved, rate-limited event."""
+    event = await poll_proactive_event(payload.enabled)
+    return {
+        "enabled": payload.enabled,
+        "llm_available": model_is_configured(),
+        "event": event,
+    }
+
+
+@app.post("/api/companion/events/{event_id}/dismiss")
+async def companion_dismiss_event(event_id: int):
+    if not dismiss_proactive_event(event_id):
+        raise HTTPException(404, "El evento no existe o ya fue descartado.")
+    return {"dismissed": True, "event_id": event_id}
+
 
 @app.delete("/api/chat/history",status_code=204)
 async def clear_chat_history():
