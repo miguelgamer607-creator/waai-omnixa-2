@@ -228,7 +228,9 @@ async def poll_proactive_event(enabled: bool) -> dict | None:
         pass
     with db_session() as db:
         last = db.execute(
-            "SELECT created_at FROM companion_events WHERE kind='proactive_checkin' ORDER BY id DESC LIMIT 1"
+            "SELECT created_at FROM companion_events "
+            "WHERE kind IN ('proactive_checkin','research_comment','task_checkin') "
+            "ORDER BY id DESC LIMIT 1"
         ).fetchone()
         if last:
             try:
