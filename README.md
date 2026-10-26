@@ -1,6 +1,6 @@
 # Waai · Omnixa
 
-**Waai Companion v0.4.0** · Aplicación web instalable (PWA) · Python/FastAPI · SQLite · Español
+**Waai Companion v0.4.1** · Aplicación web instalable (PWA) · Python/FastAPI · SQLite · Español
 
 Waai empieza como secretaria digital con conversación básica, tareas, recordatorios, informes, memoria autorizada e investigaciones asignadas explícitamente. Este repositorio es la única base de desarrollo del proyecto.
 
