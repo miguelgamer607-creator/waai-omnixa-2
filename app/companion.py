@@ -36,12 +36,13 @@ def infer_companion_action(message: str) -> dict[str, str]:
     low = text.lower()
     action = {"type": "none", "label": "", "query": "", "url": ""}
 
-    url_match = re.search(r"https://[^\s<>\"']+", text, re.IGNORECASE)
+    url_match = re.search(r"https?://[^\\s<>]+", text, re.IGNORECASE)
     open_verbs = ("abre ", "abrir ", "muéstrame ", "muestrame ", "visita ", "entra a ", "entra en ")
     if url_match and any(verb in low for verb in open_verbs):
         safe = _https_url(url_match.group(0))
         if safe:
             return {"type": "open_url", "label": "Abrir enlace", "query": "", "url": safe}
+        return action
 
     verbs = (
         "busca", "buscar", "búscame", "buscame", "encuentra", "encuéntrame",
