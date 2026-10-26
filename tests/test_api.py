@@ -98,7 +98,7 @@ def test_config_handles_invalid_autonomy_hour(client, monkeypatch):
 def test_service_worker_never_caches_api_responses(client):
     response = client.get("/sw.js")
     assert response.status_code == 200
-    assert "waai-shell-0.4.0" in response.text
+    assert "waai-shell-0.4.1" in response.text
     assert "url.pathname.startsWith('/api/')" in response.text
     assert response.headers["Service-Worker-Allowed"] == "/"
 
