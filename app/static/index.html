@@ -23,7 +23,7 @@
 
 <section class="view active" id="inicio">
  <div class="card hero pet-stage" id="heroStage" data-state="idle">
-  <div class="hero-copy"><p class="eyebrow">TU COMPAÑERA DIGITAL</p><h2 id="greeting">Hola. Estoy aquí.</h2><div class="hero-status"><span class="state-pill"><span class="state-dot" id="stateDot"></span><span id="petStateText">En reposo</span></span></div><p id="proactive">Cargando tareas y actividad reciente…</p><div class="hero-actions"><button class="primary-btn" onclick="go('chat')">Hablar con Waai</button><button class="soft-btn" onclick="go('investiga')">Nueva investigación</button></div></div>
+  <div class="hero-copy"><p class="eyebrow">TU COMPAÑERA DIGITAL</p><h2 id="greeting">Hola. Estoy aquí.</h2><div class="hero-status"><span class="state-pill"><span class="state-dot" id="stateDot"></span><span id="petStateText">En reposo</span></span></div><p id="proactive">Cargando tareas y actividad reciente…</p><div class="hero-actions"><button class="primary-btn" data-action="go-chat">Hablar con Waai</button><button class="soft-btn" data-action="go-research">Nueva investigación</button></div></div>
   <div class="hero-figure"><img id="homeMascot" src="/static/assets/waai-companion.svg" alt="Waai, mascota animada"></div>
  </div>
  <div class="stats">
@@ -32,64 +32,64 @@
   <div class="stat"><strong id="researchN">—</strong><span>Investigaciones abiertas</span></div>
   <div class="stat"><strong id="noticeN">—</strong><span>Avisos sin leer</span></div>
  </div>
- <div class="section-heading"><h2>Lo que tengo en el radar</h2><button class="soft-btn tiny-btn" onclick="loadHome()">Actualizar</button></div>
+ <div class="section-heading"><h2>Lo que tengo en el radar</h2><button class="soft-btn tiny-btn" data-action="refresh-home">Actualizar</button></div>
  <div class="card"><div id="homeFeed"><div class="empty">Cargando tu resumen…</div></div></div>
- <div class="section-heading"><h2>Prioridades</h2><button class="soft-btn tiny-btn" onclick="go('tareas')">Ver tareas</button></div>
+ <div class="section-heading"><h2>Prioridades</h2><button class="soft-btn tiny-btn" data-action="go-tasks">Ver tareas</button></div>
  <div id="homeTasks"></div>
  <div class="notice-box" id="initiativeNote">La iniciativa automática está desactivada hasta que se configure en el servidor.</div>
 </section>
 
 <section class="view" id="chat">
- <div class="between" style="margin:5px 1px 9px"><div><h2 style="margin:0">Conversación</h2><div class="meta">Puedes hablarme con naturalidad</div></div><button class="soft-btn tiny-btn" onclick="clearChat()">Borrar historial</button></div>
+ <div class="between" style="margin:5px 1px 9px"><div><h2 style="margin:0">Conversación</h2><div class="meta">Puedes hablarme con naturalidad</div></div><button class="soft-btn tiny-btn" data-action="clear-chat">Borrar historial</button></div>
  <div class="chat-frame" id="chatFrame">
   <div class="chat-backdrop" id="chatBackdrop"></div>
-  <div class="persona-bar"><div class="persona-portrait"><img id="chatAvatar" src="/static/assets/waai-companion.svg" alt="Retrato de Waai"></div><div class="grow"><h3>Waai-Fu</h3><div class="meta"><span class="live-dot"></span> <span id="chatMode">Asistente lista</span></div></div><button class="soft-btn tiny-btn" onclick="startPriorityChat()">Priorizar</button></div>
+  <div class="persona-bar"><div class="persona-portrait"><img id="chatAvatar" src="/static/assets/waai-companion.svg" alt="Retrato de Waai"></div><div class="grow"><h3>Waai-Fu</h3><div class="meta"><span class="live-dot"></span> <span id="chatMode">Asistente lista</span></div></div><button class="soft-btn tiny-btn" data-action="priority">Priorizar</button></div>
   <div class="chatlog" id="chatlog" aria-live="polite"><div class="bubble assistant">Hola. Soy Waai. Podemos conversar, organizar tareas o investigar algo juntos.</div></div>
   <div class="typing" id="typingIndicator">Waai está pensando…</div>
   <form id="chatForm" class="composer"><input id="chatText" aria-label="Mensaje para Waai" autocomplete="off" placeholder="Escribe un mensaje…" maxlength="4000" required><button class="primary-btn" aria-label="Enviar mensaje">➤</button></form>
-  <div class="chat-toolbar"><span id="chatStatus">Tus recuerdos permanecen bajo tu control.</span><button class="soft-btn tiny-btn" onclick="go('investiga')">Investigar</button></div>
+  <div class="chat-toolbar"><span id="chatStatus">Tus recuerdos permanecen bajo tu control.</span><button class="soft-btn tiny-btn" data-action="go-research">Investigar</button></div>
  </div>
- <div class="quick-prompts"><button onclick="send('Ayúdame a ordenar mis prioridades de hoy.')">Ordenar prioridades</button><button onclick="send('¿Qué tema interesante podríamos investigar hoy?')">Proponer una idea</button><button onclick="send('¿Qué recuerdas de mí?')">Consultar memoria</button><button onclick="send('Hola, ¿qué tienes en mente?')">Charlar un rato</button></div>
+ <div class="quick-prompts"><button data-action="prompt" data-message="Ayúdame a ordenar mis prioridades de hoy.">Ordenar prioridades</button><button data-action="prompt" data-message="¿Qué tema interesante podríamos investigar hoy?">Proponer una idea</button><button data-action="prompt" data-message="¿Qué recuerdas de mí?">Consultar memoria</button><button data-action="prompt" data-message="Hola, ¿qué tienes en mente?">Charlar un rato</button></div>
 </section>
 
 <section class="view" id="tareas">
  <h2>Tareas y compromisos</h2><p class="muted">Acciones concretas, con fecha y prioridad si las necesitas.</p>
  <div class="card"><form id="taskForm" class="form-grid"><label for="taskTitle">¿Qué hay que hacer?</label><input id="taskTitle" required maxlength="180" placeholder="Ej. Terminar el módulo de Waai"><label for="taskDetails">Detalles opcionales</label><textarea id="taskDetails" maxlength="2000" placeholder="Contexto, pasos o información útil"></textarea><div class="row"><div class="grow"><label for="taskPriority">Prioridad</label><select id="taskPriority"><option value="normal">Normal</option><option value="high">Alta</option><option value="low">Baja</option></select></div><div class="grow"><label for="taskDue">Fecha y hora opcional</label><input id="taskDue" type="datetime-local"></div></div><button class="primary-btn">Guardar tarea</button><div class="status" id="taskStatus"></div></form></div>
- <div class="row" style="margin:10px 0"><button class="soft-btn tiny-btn" onclick="loadTasks('all')">Todas</button><button class="soft-btn tiny-btn" onclick="loadTasks('pending')">Pendientes</button><button class="soft-btn tiny-btn" onclick="loadTasks('completed')">Completadas</button></div>
+ <div class="row" style="margin:10px 0"><button class="soft-btn tiny-btn" data-action="tasks-all">Todas</button><button class="soft-btn tiny-btn" data-action="tasks-pending">Pendientes</button><button class="soft-btn tiny-btn" data-action="tasks-completed">Completadas</button></div>
  <div id="taskList"><div class="empty">Cargando tareas…</div></div>
 </section>
 
 <section class="view" id="memoria">
  <h2>Memoria bajo tu control</h2><div class="notice-box">Waai no debe convertir cada conversación en un recuerdo. Guarda solo lo que decidas conservar; puedes borrar cualquier recuerdo después.</div>
  <div class="card"><form id="memoryForm" class="form-grid"><label for="memKey">Nombre del recuerdo</label><input id="memKey" maxlength="80" required placeholder="Ej. Preferencia de trabajo"><label for="memValue">Qué debo recordar</label><textarea id="memValue" maxlength="700" required placeholder="Una preferencia, dato de proyecto o contexto que autorices conservar"></textarea><label class="checkbox-label"><input id="memConfirm" type="checkbox" required><span>Autorizo a Waai a guardar este recuerdo.</span></label><button class="primary-btn">Guardar recuerdo</button><div class="status" id="memoryStatus"></div></form></div>
- <div class="section-heading"><h2>Recuerdos guardados</h2><button class="danger-btn tiny-btn" onclick="deleteAllMemories()">Borrar todos</button></div><div id="memoryList"><div class="empty">Cargando memoria…</div></div>
+ <div class="section-heading"><h2>Recuerdos guardados</h2><button class="danger-btn tiny-btn" data-action="delete-memories-all">Borrar todos</button></div><div id="memoryList"><div class="empty">Cargando memoria…</div></div>
 </section>
 
 <section class="view" id="investiga">
  <h2>Laboratorio de investigación</h2><p class="muted">Asigna un tema. Waai buscará extractos, te explicará lo que encontró y te dejará revisar las fuentes antes de guardar conocimiento.</p>
  <div class="card"><form id="researchForm" class="form-grid"><label for="researchTopic">Tema de investigación</label><input id="researchTopic" required maxlength="240" placeholder="Ej. Modelos IA pequeños para asistentes personales"><label for="researchScope">Enfoque o pregunta</label><textarea id="researchScope" maxlength="1000" placeholder="¿Qué queremos comparar, comprobar o entender?"></textarea><label for="researchDomains">Dominios permitidos (opcional)</label><input id="researchDomains" placeholder="gov.co, who.int"><button class="primary-btn">Asignar investigación</button><div class="status" id="researchStatus"></div></form></div>
- <div class="section-heading"><h2>Investigaciones y fuentes</h2><button class="soft-btn tiny-btn" onclick="loadResearch()">Actualizar</button></div><div id="researchList"><div class="empty">Cargando investigaciones…</div></div>
+ <div class="section-heading"><h2>Investigaciones y fuentes</h2><button class="soft-btn tiny-btn" data-action="refresh-research">Actualizar</button></div><div id="researchList"><div class="empty">Cargando investigaciones…</div></div>
 </section>
 
 <section class="view" id="avisos">
  <h2>Actividad y avisos</h2><p class="muted">Aquí aparecen recordatorios, resúmenes diarios e investigaciones terminadas.</p>
- <div class="row"><button class="soft-btn tiny-btn" onclick="loadNotifications()">Actualizar</button><button class="soft-btn tiny-btn" onclick="markAllRead()">Marcar todos leídos</button></div>
+ <div class="row"><button class="soft-btn tiny-btn" data-action="refresh-notifications">Actualizar</button><button class="soft-btn tiny-btn" data-action="mark-all-read">Marcar todos leídos</button></div>
  <div id="notificationList"><div class="empty">Cargando avisos…</div></div>
  <div class="notice-box">Los avisos se guardan en el servidor. Para recibir notificaciones push con la aplicación cerrada habrá que integrar el servicio de notificaciones del dispositivo.</div>
 </section>
 
 <section class="view" id="ajustes">
  <h2>Configuración de Waai</h2>
- <div class="card"><h3>Aspecto de la compañera</h3><p class="muted">Puedes cargar un retrato personal para reemplazar la mascota ilustrada. La imagen se comprime y se guarda en el almacenamiento local de este navegador, no se envía al backend.</p><div class="avatar-setting"><div class="avatar-preview"><img id="settingsAvatar" src="/static/assets/waai-companion.svg" alt="Vista previa de Waai"></div><div class="grow"><label for="avatarFile">Elegir imagen</label><input class="file-input" id="avatarFile" type="file" accept="image/*"><div class="status" id="avatarStatus"></div><button class="danger-btn tiny-btn" type="button" onclick="clearAvatar()">Restaurar mascota predeterminada</button></div></div><div class="separator"></div><label for="petMotion">Movimiento de la mascota</label><select id="petMotion"><option value="normal">Animaciones normales</option><option value="reduced">Animación reducida</option><option value="off">Sin animaciones</option></select><label class="checkbox-label"><input id="petVisible" type="checkbox" checked><span>Mostrar mascota flotante dentro de Waai</span></label></div>
+ <div class="card"><h3>Aspecto de la compañera</h3><p class="muted">Puedes cargar un retrato personal para reemplazar la mascota ilustrada. La imagen se comprime y se guarda en el almacenamiento local de este navegador, no se envía al backend.</p><div class="avatar-setting"><div class="avatar-preview"><img id="settingsAvatar" src="/static/assets/waai-companion.svg" alt="Vista previa de Waai"></div><div class="grow"><label for="avatarFile">Elegir imagen</label><input class="file-input" id="avatarFile" type="file" accept="image/*"><div class="status" id="avatarStatus"></div><button class="danger-btn tiny-btn" type="button" data-action="clear-avatar">Restaurar mascota predeterminada</button></div></div><div class="separator"></div><label for="petMotion">Movimiento de la mascota</label><select id="petMotion"><option value="normal">Animaciones normales</option><option value="reduced">Animación reducida</option><option value="off">Sin animaciones</option></select><label class="checkbox-label"><input id="petVisible" type="checkbox" checked><span>Mostrar mascota flotante dentro de Waai</span></label></div>
  <div class="card"><h3>Estado de inteligencia</h3><div class="model-status"><div class="model-icon">✧</div><div class="grow"><strong id="modelName">Comprobando conexión…</strong><div class="meta" id="modelDescription">Consultando Waai Core.</div></div></div><div class="separator"></div><div class="stack"><div class="between"><span class="muted">Investigación web</span><strong id="researchMode">—</strong></div><div class="between"><span class="muted">Iniciativa diaria</span><strong id="autonomyMode">—</strong></div><div class="between"><span class="muted">Zona horaria</span><strong id="timezoneMode">—</strong></div></div><div class="notice-box" id="modelPrivacy">Al conectar un proveedor remoto, la conversación reciente que necesite el modelo se transmite al servidor del proveedor. Nunca pongas claves API en el navegador ni en el repositorio.</div><p class="muted tiny">El modelo se configura con variables de entorno en el servidor. Sin esa configuración, Waai usa reglas básicas. Una API compatible con OpenAI no implica que el modelo sea de OpenAI.</p><a href="https://github.com/miguelgamer607-creator/waai-omnixa-2/blob/main/AUTONOMY.md" target="_blank" rel="noopener noreferrer">Guía de configuración de modelo e iniciativa</a></div>
- <div class="card"><h3>Acceso privado</h3><p class="muted">En modo desarrollo no hace falta token. En producción, pega el token configurado en el servidor. Se guarda solamente en el almacenamiento local de este navegador.</p><label for="token">Token de acceso</label><input id="token" type="password" autocomplete="off" placeholder="Token privado del servidor"><div class="row"><button class="primary-btn" onclick="saveToken()">Guardar token</button><button class="soft-btn" onclick="clearToken()">Borrar token</button></div><div class="status" id="tokenStatus"></div></div>
+ <div class="card"><h3>Acceso privado</h3><p class="muted">En modo desarrollo no hace falta token. En producción, pega el token configurado en el servidor. Se guarda solamente en el almacenamiento local de este navegador.</p><label for="token">Token de acceso</label><input id="token" type="password" autocomplete="off" placeholder="Token privado del servidor"><div class="row"><button class="primary-btn" data-action="save-token">Guardar token</button><button class="soft-btn" data-action="clear-token">Borrar token</button></div><div class="status" id="tokenStatus"></div></div>
  <div class="card"><h3>Instalación</h3><p class="muted">Puedes instalar la aplicación desde el menú del navegador si este ofrece la opción. Una mascota dentro de Waai no es todavía una ventana de superposición sobre otras aplicaciones de Android; eso necesita una versión nativa.</p><button class="soft-btn hide" id="installBtn">Instalar Waai Companion</button></div>
 </section>
 <p class="footer-note">Waai Companion · una creación de Omnixa. La autonomía siempre tiene límites visibles y permisos controlados.</p>
 </main>
 
 <div class="pet-dock" id="petDock">
- <div class="pet-bubble" id="petBubble" hidden><p id="petBubbleText">Hola. ¿Quieres que hagamos algo?</p><div class="pet-bubble-actions"><button class="primary-btn" onclick="openPetChat()">Hablar</button><button class="soft-btn" onclick="petSuggest()">Sugerencia</button><button class="soft-btn tiny-btn" onclick="togglePetBubble()">×</button></div></div>
+ <div class="pet-bubble" id="petBubble" hidden><p id="petBubbleText">Hola. ¿Quieres que hagamos algo?</p><div class="pet-bubble-actions"><button class="primary-btn" data-action="open-pet-chat">Hablar</button><button class="soft-btn" data-action="pet-suggest">Sugerencia</button><button class="soft-btn tiny-btn" data-action="toggle-pet-bubble">×</button></div></div>
  <button class="pet-button" id="petButton" aria-label="Waai, tocar para interactuar" data-state="idle"><img id="floatingMascot" src="/static/assets/waai-companion.svg" alt=""></button>
 </div>
 
