@@ -39,3 +39,10 @@ Si no hay intereses configurados, el modo no hace búsquedas. Puedes apagarlo co
 ## Qué significa “iniciativa”
 
 El sistema puede proponer una prioridad, ejecutar investigaciones limitadas según la lista que autorizaste y preparar un resumen a partir de resultados encontrados. No tiene consciencia, voluntad independiente ni aprendizaje automático de sus experiencias. Lo que conserva a largo plazo son datos estructurados y resúmenes que el usuario decide aprobar. Una futura capa de planificación puede ampliar esas capacidades, siempre con límites explícitos y registro de acciones.
+
+
+## Interfaz Waai Companion
+
+La PWA nueva utiliza la mascota SVG local y recursos CSS/JavaScript servidos desde la propia aplicación. Desde **Ajustes** puedes usar un retrato propio. Este archivo solo se guarda en el almacenamiento del navegador, por lo que no se sincroniza con otros navegadores o dispositivos. La burbuja del personaje se puede mover dentro de la interfaz; todavía no es una ventana flotante del sistema operativo.
+
+Consulta `THIRD_PARTY_NOTICES.md` para ver qué referencias de código abierto se revisaron y qué no se copió. El proyecto aún no define una licencia raíz.
