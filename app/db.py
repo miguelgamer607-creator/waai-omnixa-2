@@ -102,4 +102,19 @@ def init_db() -> None:
         CREATE INDEX IF NOT EXISTS idx_knowledge_topic ON knowledge(topic);
         CREATE INDEX IF NOT EXISTS idx_notifications_unread ON notifications(read_at, created_at);
         CREATE INDEX IF NOT EXISTS idx_research_sources_task ON research_sources(research_id);
+        CREATE TABLE IF NOT EXISTS companion_events (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            event_key TEXT NOT NULL UNIQUE,
+            kind TEXT NOT NULL,
+            title TEXT NOT NULL,
+            message TEXT NOT NULL,
+            action_type TEXT NOT NULL DEFAULT 'none',
+            action_query TEXT NOT NULL DEFAULT '',
+            action_url TEXT NOT NULL DEFAULT '',
+            created_at TEXT NOT NULL,
+            delivered_at TEXT,
+            dismissed_at TEXT
+        );
+        CREATE INDEX IF NOT EXISTS idx_companion_events_delivery
+            ON companion_events(delivered_at, dismissed_at, created_at);
         """)
