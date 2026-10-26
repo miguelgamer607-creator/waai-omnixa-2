@@ -11,6 +11,7 @@ import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.Icon;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
@@ -135,7 +136,7 @@ public final class OverlayService extends Service {
             .setContentIntent(openPending)
             .setOngoing(true)
             .setCategory(Notification.CATEGORY_SERVICE)
-            .addAction(new Notification.Action.Builder(null, "Detener", stopPending).build());
+            .addAction(new Notification.Action.Builder(Icon.createWithResource(this, android.R.drawable.ic_menu_close_clear_cancel), "Detener", stopPending).build());
         return builder.build();
     }
 
