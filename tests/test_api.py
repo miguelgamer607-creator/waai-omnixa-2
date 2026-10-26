@@ -72,3 +72,32 @@ def test_research_disabled_mode_does_not_call_external_search(client, monkeypatc
     assert result.json()["status"] == "assigned"
     assert result.json()["sources"] == []
     assert result.json()["allowed_domains"] == ["example.org"]
+
+
+def test_app_shell_uses_local_assets_and_security_headers(client):
+    response = client.get("/")
+    assert response.status_code == 200
+    assert "Content-Security-Policy" in response.headers
+    assert "script-src 'self'" in response.headers["Content-Security-Policy"]
+    body = response.text
+    assert "/static/assets/companion.css" in body
+    assert "/static/assets/companion.js" in body
+    assert "onclick=" not in body
+    assert client.get("/static/assets/companion.css").status_code == 200
+    assert client.get("/static/assets/companion.js").status_code == 200
+    assert client.get("/static/assets/waai-companion.svg").status_code == 200
+
+
+def test_config_handles_invalid_autonomy_hour(client, monkeypatch):
+    monkeypatch.setenv("WAAI_AUTONOMY_RESEARCH_HOUR", "not-an-integer")
+    response = client.get("/api/config")
+    assert response.status_code == 200
+    assert response.json()["autonomous_research_hour"] == 6
+
+
+def test_service_worker_never_caches_api_responses(client):
+    response = client.get("/sw.js")
+    assert response.status_code == 200
+    assert "waai-shell-0.4.0" in response.text
+    assert "url.pathname.startsWith('/api/')" in response.text
+    assert response.headers["Service-Worker-Allowed"] == "/"
