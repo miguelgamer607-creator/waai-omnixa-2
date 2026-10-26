@@ -273,7 +273,7 @@ async def chat(payload:ChatInput):
         history = [dict(row) for row in reversed(history_rows)]
         approved_knowledge = [dict(row) for row in knowledge_rows]
         task_lines = [f"- {row['title']} (prioridad {row['priority']}" + (f", fecha {row['due_at']}" if row["due_at"] else "") + ")" for row in task_rows]
-        context_note = "Tareas pendientes actuales verificadas por la aplicación:\n" + ("\n".join(task_lines) if task_lines else "No hay tareas pendientes guardadas.") + "\nPropón prioridades de forma realista; no declares una tarea completada ni cambies datos.""
+        context_note = "Tareas pendientes actuales verificadas por la aplicación:\n" + ("\n".join(task_lines) if task_lines else "No hay tareas pendientes guardadas.") + "\nPropón prioridades de forma realista; no declares una tarea completada ni cambies datos."
         try:
             reply["reply"] = await generate_reply(messages=history, approved_knowledge=approved_knowledge, context_note=context_note)
             reply["llm_used"] = True
