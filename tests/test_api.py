@@ -101,3 +101,36 @@ def test_service_worker_never_caches_api_responses(client):
     assert "waai-shell-0.4.0" in response.text
     assert "url.pathname.startsWith('/api/')" in response.text
     assert response.headers["Service-Worker-Allowed"] == "/"
+
+
+def test_chat_uses_optional_model_with_verified_task_context(client, monkeypatch):
+    from app import main
+
+    created = client.post("/api/tasks", json={"title": "Preparar demo de Waai", "priority": "high"})
+    assert created.status_code == 201
+    captured = {}
+
+    async def fake_generate_reply(*, messages, approved_knowledge=(), context_note=""):
+        captured["context_note"] = context_note
+        captured["messages"] = list(messages)
+        return "Podemos empezar por preparar una demo pequeña y probarla."
+
+    monkeypatch.setattr(main, "model_is_configured", lambda: True)
+    monkeypatch.setattr(main, "model_name", lambda: "mock-companion-model")
+    monkeypatch.setattr(main, "generate_reply", fake_generate_reply)
+    response = client.post("/api/chat", json={"message": "Ayúdame a ordenar mis prioridades de hoy"})
+    assert response.status_code == 200
+    data = response.json()
+    assert data["llm_used"] is True
+    assert data["model"] == "mock-companion-model"
+    assert "demo de Waai" in captured["context_note"]
+    assert "recent_research" in captured["context_note"]
+    assert "Podemos empezar" in data["reply"]
+
+
+def test_chat_can_report_empty_research_history(client):
+    response = client.post("/api/chat", json={"message": "¿Qué investigaste hasta ahora?"})
+    assert response.status_code == 200
+    data = response.json()
+    assert data["intent"] == "research_status"
+    assert "Todavía no tengo investigaciones registradas" in data["reply"]
