@@ -158,8 +158,17 @@ async function send(message){
    });
   }
   $('chatMode').textContent=result.llm_used?'Modelo lingüístico conectado':'Modo básico o acción estructurada';
-  setStatus('chatStatus',result.intent==='research_assigned'?'Investigación registrada. Revisa fuentes en la sección Investigar.':'Respuesta recibida.','ok');
-  setPetState(result.intent==='research_assigned'?'research':'talking',result.intent==='research_assigned'?'He empezado a revisar las fuentes para tu encargo.':'Ya estoy aquí. ¿Seguimos?');
+  const assignedResearch=result.intent==='research_assigned';
+  const hasResearchSources=assignedResearch&&Array.isArray(result.sources)&&result.sources.length>0;
+  const searchDisabled=assignedResearch&&result.research&&result.research.status==='assigned';
+  const researchNoResults=assignedResearch&&result.research&&result.research.status==='no_results';
+  if(assignedResearch){
+   setStatus('chatStatus',hasResearchSources?'Investigación preliminar lista. Revisa las fuentes antes de aprobar un resumen.':searchDisabled?'Encargo guardado; la búsqueda web está desactivada en el servidor.':'Encargo guardado; no hubo resultados útiles.','ok');
+   setPetState(hasResearchSources?'happy':'talking',hasResearchSources?'Encontré '+result.sources.length+' fuente(s) inicial(es). Revisemos qué respaldan.':searchDisabled?'Ya anoté el encargo. Para buscar fuentes hay que habilitar la investigación en el servidor.':researchNoResults?'No encontré fuentes suficientes esta vez. Podemos ajustar el tema o el alcance.':'El encargo quedó guardado.');
+  }else{
+   setStatus('chatStatus','Respuesta recibida.','ok');
+   setPetState('talking','Ya estoy aquí. ¿Seguimos?');
+  }
   $('chatlog').scrollTop=$('chatlog').scrollHeight;
   await loadHome();
  }catch(e){
