@@ -1,6 +1,6 @@
 # Hoja de ruta de ingeniería de Waai Companion
 
-## 0.4.1 — Companion PWA
+## 0.5.0 — Companion Android + PWA
 - [x] Interfaz móvil de un solo usuario.
 - [x] Mascota SVG original y estados de animación.
 - [x] Burbuja flotante y arrastrable dentro de la aplicación.
@@ -10,7 +10,11 @@
 - [x] Investigación diaria opcional y limitada a temas configurados por el usuario.
 - [x] Shell offline limitado; las respuestas de API nunca entran en caché.
 - [x] Seguridad básica del navegador y pruebas de frontend/backend.
-- [ ] Validación visual y funcional en el teléfono objetivo.
+- [x] API de acciones móviles y eventos proactivos opt-in.
+- [x] Proyecto Android nativo con servicio overlay, chat y canal de avisos.
+- [x] Workflow de GitHub Actions para producir el APK debug.
+- [ ] Verificar el APK descargado e instalado en el teléfono objetivo.
+- [ ] Probar permisos, batería, reinicio del servicio y apertura de contenido en el dispositivo real.
 
 ## Etapa 2 — Conversación y contexto
 - Mejorar el prompt base, mantener contexto sin exceder límites de tokens y mostrar qué modelo está activo.
