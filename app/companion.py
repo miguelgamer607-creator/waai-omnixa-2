@@ -63,8 +63,8 @@ def infer_companion_action(message: str) -> dict[str, str]:
         "",
         query,
     ).strip(" \t\r\n.,;:¡!¿?\"'")
-    query = re.sub(r"(?i)^\\s*(?:imágenes|imagenes|imagen|fotos?|vídeos?|videos?|música|musica|canciones?|playlist)\\s+(?:de|sobre|para)\\s+", "", query)
-    query = re.sub(r"(?i)^\\s*(?:de|del|sobre|acerca de|para)\\s+", "", query).strip()
+    query = re.sub(r"(?i)^ *(?:imágenes|imagenes|imagen|fotos?|vídeos?|videos?|música|musica|canciones?|playlist) +(?:de|sobre|para) +", "", query)
+    query = re.sub(r"(?i)^ *(?:de|del|sobre|acerca de|para) +", "", query).strip()
     query = query[:220]
     if not query and low in {"abre", "abrir"}:
         return action
