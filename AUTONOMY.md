@@ -14,6 +14,18 @@ La clave es opcional para servidores locales; para proveedores remotos utiliza u
 
 El endpoint tiene que ser accesible **desde el servidor de Waai**. Si Waai está en Codespaces o en un hosting remoto, `127.0.0.1` apunta a esa máquina remota, no a tu teléfono. Para usar un modelo local, el servidor donde corre Waai debe poder alcanzar la API local, por ejemplo un servicio de inferencia compatible con OpenAI. Evita exponer una API local a internet sin autenticación.
 
+## Ejemplo de proveedor generativo para pruebas
+
+El adaptador acepta proveedores que implementen el endpoint compatible con Chat Completions. Por ejemplo, la API de Gemini documenta compatibilidad con OpenAI mediante una URL base `https://generativelanguage.googleapis.com/v1beta/openai/` y una clave de Google AI Studio. Verifica en la documentación de Google qué modelo está disponible para tu cuenta y la cuota vigente antes de escoger el identificador.
+
+Ejemplo de variables de servidor (no pongas la clave en la app Android ni en el repositorio):
+
+    WAAI_LLM_BASE_URL=https://generativelanguage.googleapis.com/v1beta/openai
+    WAAI_LLM_MODEL=gemini-3.6-flash
+    WAAI_LLM_API_KEY=TU_CLAVE_DE_AI_STUDIO
+
+La disponibilidad del identificador y del nivel gratuito puede variar. En la modalidad gratuita de Gemini, Google indica que el contenido puede utilizarse para mejorar sus productos; no uses recuerdos sensibles ni datos privados hasta que hayas revisado sus condiciones y opciones de privacidad. Consulta la página oficial de [compatibilidad con OpenAI](https://ai.google.dev/gemini-api/docs/openai/) y la [página de precios](https://ai.google.dev/gemini-api/docs/pricing?hl=es). La integración de Waai sigue siendo opcional: si las variables están vacías, el sistema usa las reglas básicas.
+
 Variables opcionales:
 
     WAAI_LLM_TIMEOUT_SECONDS=45
