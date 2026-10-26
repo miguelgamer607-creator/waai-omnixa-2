@@ -1,6 +1,6 @@
 # Hoja de ruta de ingeniería de Waai Companion
 
-## 0.4.0 — Companion PWA
+## 0.4.1 — Companion PWA
 - [x] Interfaz móvil de un solo usuario.
 - [x] Mascota SVG original y estados de animación.
 - [x] Burbuja flotante y arrastrable dentro de la aplicación.
